@@ -1,7 +1,6 @@
 import { PluginsPage, unloadPluginsCss } from "./pages/plugins.jsx";
-import { ThemesPage } from "./pages/themes.jsx";
+import { SettingsPage, unloadSettingsCss } from "./pages/settings.jsx";
 import { PluginsIcon } from "./icons/plugins-icon.jsx";
-import { ThemesIcon } from "./icons/themes-icon.jsx";
 import { unloadDropdownCss } from "../../components/dropdown.js";
 
 const {
@@ -30,21 +29,17 @@ const allSettings = [
             icon: PluginsIcon
         }
     ),
-    registerSection(
-        "section",
-        "hdzilyes-themes",
-        "Themes",
-        ThemesPage,
-        {
-            icon: ThemesIcon
-        }
-    )
 ]
 
 log("Settings registered")
 
+export function settings() {
+    return <SettingsPage />;
+}
+
 export function onUnload() {
     allSettings.forEach(setting => setting && setting());
     unloadPluginsCss();
+    unloadSettingsCss();
     unloadDropdownCss();
 }
