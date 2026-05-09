@@ -45,5 +45,3 @@ export function Dropdown(props: DropdownProps) {
         </div>
     );
 }
-
-export default Dropdown;
