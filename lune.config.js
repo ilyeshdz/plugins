@@ -4,6 +4,5 @@ export default defineConfig({
   builder: "rolldown",
   ssg: {
     repo_name: "Shelter Plugins",
-    base_url: "https://ilyeshdz.github.io/plugins",
   },
 });
