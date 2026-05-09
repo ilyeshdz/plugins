@@ -1,4 +1,43 @@
-const DATA_URL = "https://shindex.uwu.network/data";
+const DEFAULT_SOURCE = "https://shindex.uwu.network/data";
+
+export interface PluginSource {
+    url: string;
+    enabled: boolean;
+    name: string;
+}
+
+export function getSources(): PluginSource[] {
+    const stored = shelter.plugin.store.sources;
+    if (!stored || !Array.isArray(stored) || stored.length === 0) {
+        return [{ url: DEFAULT_SOURCE, enabled: true, name: "Shindex" }];
+    }
+    return stored;
+}
+
+export function getEnabledSources(): string[] {
+    const sources = getSources();
+    return sources.filter(s => s.enabled).map(s => s.url);
+}
+
+export function addSource(source: PluginSource): void {
+    const current = getSources();
+    current.push(source);
+    shelter.plugin.store.sources = current;
+}
+
+export function removeSource(url: string): void {
+    const current = getSources().filter(s => s.url !== url);
+    shelter.plugin.store.sources = current;
+}
+
+export function updateSource(url: string, updates: Partial<PluginSource>): void {
+    const current = getSources();
+    const index = current.findIndex(s => s.url === url);
+    if (index !== -1) {
+        current[index] = { ...current[index], ...updates };
+        shelter.plugin.store.sources = current;
+    }
+}
 
 function getInstalledPlugins() {
     return shelter?.plugins?.installedPlugins?.() || {};
@@ -55,19 +94,29 @@ function getPluginId(plugin: RemotePlugin): string | undefined {
 }
 
 export async function fetchPlugins(): Promise<Plugin[]> {
-    const response = await fetch(DATA_URL);
-    const repos: PluginRepo[] = await response.json();
-
+    const sources = getEnabledSources();
     const plugins: Plugin[] = [];
-    for (const repo of repos) {
-        for (const plugin of repo.plugins) {
-            plugins.push({
-                ...plugin,
-                enabled: isPluginEnabled(plugin),
-                installed: isPluginInstalled(plugin),
-            });
+
+    for (const sourceUrl of sources) {
+        try {
+            const response = await fetch(sourceUrl);
+            if (!response.ok) continue;
+            const repos: PluginRepo[] = await response.json();
+
+            for (const repo of repos) {
+                for (const plugin of repo.plugins) {
+                    plugins.push({
+                        ...plugin,
+                        enabled: isPluginEnabled(plugin),
+                        installed: isPluginInstalled(plugin),
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn(`Failed to fetch from ${sourceUrl}:`, e);
         }
     }
+
     return plugins;
 }
 
