@@ -1,202 +1,143 @@
-export interface Plugin {
-    id: string;
+const DATA_URL = "https://shindex.uwu.network/data";
+
+function getInstalledPlugins() {
+    return shelter?.plugins?.installedPlugins?.() || {};
+}
+
+export interface RemotePlugin {
     name: string;
-    description: string;
-    version: string;
     author: string;
-    tags: string[];
-    hasSettings: boolean;
+    description: string;
+    url: string;
+    version?: string;
+    hash?: string;
+    main?: string;
+    entrypoint?: string;
+    site?: {
+        longDescription?: string;
+        demoImage?: string;
+        warnings?: string[];
+        infos?: string[];
+        pinned?: boolean;
+        ignored?: boolean;
+    };
+}
+
+export interface PluginRepo {
+    name: string;
+    url: string;
+    plugins: RemotePlugin[];
+}
+
+export interface Plugin extends RemotePlugin {
     enabled: boolean;
     installed: boolean;
-    downloads: number;
-    rating: number;
 }
 
-export interface Tag {
-    id: string;
-    name: string;
-    description: string;
-    count: number;
-}
-
-const mockPlugins: Plugin[] = [
-    {
-        id: "account-panel",
-        name: "AccountPanelServer",
-        description: "Right click your account panel in the bottom left to view your profile in the current server",
-        version: "1.2.0",
-        author: "Qwerty",
-        tags: ["utility", "profile"],
-        hasSettings: true,
-        enabled: true,
-        installed: true,
-        downloads: 15420,
-        rating: 4.5
-    },
-    {
-        id: "always-animate",
-        name: "AlwaysAnimate",
-        description: "Animates anything that can be animated",
-        version: "2.1.0",
-        author: "DevTeam",
-        tags: ["appearance", "fun"],
-        hasSettings: false,
-        enabled: false,
-        installed: true,
-        downloads: 8932,
-        rating: 4.2
-    },
-    {
-        id: "always-expand",
-        name: "AlwaysExpandRoles",
-        description: "Always expands the role list in profile popouts",
-        version: "1.0.3",
-        author: "ModTools",
-        tags: ["utility", "ui"],
-        hasSettings: false,
-        enabled: false,
-        installed: false,
-        downloads: 3210,
-        rating: 3.8
-    },
-    {
-        id: "always-trust",
-        name: "AlwaysTrust",
-        description: "Removes the annoying untrusted domain and suspicious file popup",
-        version: "3.0.1",
-        author: "SecurityFix",
-        tags: ["utility", "security"],
-        hasSettings: true,
-        enabled: false,
-        installed: false,
-        downloads: 28450,
-        rating: 4.8
-    },
-    {
-        id: "better-emojis",
-        name: "BetterEmojis",
-        description: "Display emojis in high quality across all channels",
-        version: "1.5.2",
-        author: "EmojiMaster",
-        tags: ["appearance", "ui"],
-        hasSettings: true,
-        enabled: true,
-        installed: true,
-        downloads: 45120,
-        rating: 4.6
-    },
-    {
-        id: "clone-tags",
-        name: "CloneTags",
-        description: "Clone role tags to multiple roles at once",
-        version: "0.9.0",
-        author: "RoleTools",
-        tags: ["utility", "moderation"],
-        hasSettings: false,
-        enabled: false,
-        installed: false,
-        downloads: 1280,
-        rating: 3.5
-    }
-];
-
-const mockTags: Tag[] = [
-    { id: "all", name: "All", description: "All plugins", count: 6 },
-    { id: "utility", name: "Utility", description: "General utility plugins", count: 4 },
-    { id: "appearance", name: "Appearance", description: "UI/Theme plugins", count: 2 },
-    { id: "moderation", name: "Moderation", description: "Mod tools", count: 1 },
-    { id: "security", name: "Security", description: "Security plugins", count: 1 }
-];
-
-export async function fetchPlugins(): Promise<Plugin[]> {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    return [...mockPlugins];
-}
-
-export async function fetchPlugin(id: string): Promise<Plugin | null> {
-    await new Promise(resolve => setTimeout(resolve, 50));
-    return mockPlugins.find(p => p.id === id) || null;
-}
-
-export async function fetchTags(): Promise<Tag[]> {
-    await new Promise(resolve => setTimeout(resolve, 50));
-    return [...mockTags];
-}
-
-export async function searchPlugins(query: string): Promise<Plugin[]> {
-    await new Promise(resolve => setTimeout(resolve, 100));
-    const lowerQuery = query.toLowerCase();
-    return mockPlugins.filter(p =>
-        p.name.toLowerCase().includes(lowerQuery) ||
-        p.description.toLowerCase().includes(lowerQuery) ||
-        p.tags.some(t => t.toLowerCase().includes(lowerQuery))
+function isPluginInstalled(plugin: RemotePlugin): boolean {
+    return Object.values(getInstalledPlugins()).some(
+        (p: any) => p.manifest?.name === plugin.name && p.manifest?.author === plugin.author
     );
 }
 
-export async function filterPlugins(options: {
-    search?: string;
-    tag?: string;
-    status?: "all" | "enabled" | "disabled" | "installed";
-}): Promise<Plugin[]> {
-    await new Promise(resolve => setTimeout(resolve, 100));
+function isPluginEnabled(plugin: RemotePlugin): boolean {
+    const entry = Object.entries(getInstalledPlugins()).find(
+        ([, p]: [string, any]) => p.manifest?.name === plugin.name && p.manifest?.author === plugin.author
+    );
+    return entry ? entry[1].on : false;
+}
 
-    let results = [...mockPlugins];
+function getPluginId(plugin: RemotePlugin): string | undefined {
+    const entry = Object.entries(getInstalledPlugins()).find(
+        ([, p]: [string, any]) => p.manifest?.name === plugin.name && p.manifest?.author === plugin.author
+    );
+    return entry ? entry[0] : undefined;
+}
+
+export async function fetchPlugins(): Promise<Plugin[]> {
+    const response = await fetch(DATA_URL);
+    const repos: PluginRepo[] = await response.json();
+
+    const plugins: Plugin[] = [];
+    for (const repo of repos) {
+        for (const plugin of repo.plugins) {
+            plugins.push({
+                ...plugin,
+                enabled: isPluginEnabled(plugin),
+                installed: isPluginInstalled(plugin),
+            });
+        }
+    }
+    return plugins;
+}
+
+export type FilterOptions = {
+    search?: string;
+    status?: "all" | "enabled" | "disabled" | "installed";
+};
+
+export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
+    let plugins = await fetchPlugins();
 
     if (options.search) {
         const lowerQuery = options.search.toLowerCase();
-        results = results.filter(p =>
+        plugins = plugins.filter(p =>
             p.name.toLowerCase().includes(lowerQuery) ||
-            p.description.toLowerCase().includes(lowerQuery)
+            p.description.toLowerCase().includes(lowerQuery) ||
+            p.author.toLowerCase().includes(lowerQuery)
         );
-    }
-
-    if (options.tag && options.tag !== "all") {
-        results = results.filter(p => p.tags.includes(options.tag!));
     }
 
     switch (options.status) {
         case "enabled":
-            results = results.filter(p => p.enabled);
+            plugins = plugins.filter(p => p.installed && p.enabled);
             break;
         case "disabled":
-            results = results.filter(p => !p.enabled);
+            plugins = plugins.filter(p => p.installed && !p.enabled);
             break;
         case "installed":
-            results = results.filter(p => p.installed);
+            plugins = plugins.filter(p => p.installed);
             break;
     }
 
-    return results;
+    return plugins;
 }
 
-export async function togglePlugin(id: string): Promise<Plugin | null> {
-    await new Promise(resolve => setTimeout(resolve, 50));
-    const plugin = mockPlugins.find(p => p.id === id);
-    if (plugin) {
-        plugin.enabled = !plugin.enabled;
-        return { ...plugin };
-    }
-    return null;
+export async function installPlugin(plugin: RemotePlugin): Promise<void> {
+    await shelter.plugins.addRemotePlugin(plugin.name, plugin.url, true);
 }
 
-export async function installPlugin(id: string): Promise<Plugin | null> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const plugin = mockPlugins.find(p => p.id === id);
-    if (plugin) {
-        plugin.installed = true;
-        plugin.enabled = true;
-        return { ...plugin };
+export async function uninstallPlugin(plugin: RemotePlugin): Promise<void> {
+    const id = getPluginId(plugin);
+    if (id) {
+        shelter.plugins.removePlugin(id);
     }
-    return null;
 }
 
-export async function uninstallPlugin(id: string): Promise<Plugin | null> {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    const plugin = mockPlugins.find(p => p.id === id);
-    if (plugin) {
-        plugin.installed = false;
-        plugin.enabled = false;
-        return { ...plugin };
+export async function togglePlugin(plugin: RemotePlugin): Promise<void> {
+    const id = getPluginId(plugin);
+    if (!id) return;
+
+    const installed = getInstalledPlugins()[id];
+    if (!installed) return;
+
+    if (installed.on) {
+        shelter.plugins.stopPlugin(id);
+    } else {
+        shelter.plugins.startPlugin(id);
     }
-    return null;
+
+    shelter.plugins.editPlugin(id, { ...installed, on: !installed.on });
+}
+
+export function hasPluginSettings(plugin: RemotePlugin): boolean {
+    const id = getPluginId(plugin);
+    if (!id) return false;
+    return !!shelter.plugins.getSettings(id);
+}
+
+export function showPluginSettings(plugin: RemotePlugin): void {
+    const id = getPluginId(plugin);
+    if (!id) return;
+    shelter.plugins.showSettingsFor(id);
 }
