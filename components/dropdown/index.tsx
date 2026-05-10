@@ -1,5 +1,5 @@
 import { For } from "solid-js";
-import css from "./dropdown.scss";
+import classes from "./index.scss";
 
 const {
     ui: {
@@ -7,7 +7,7 @@ const {
     }
 } = shelter;
 
-export const unloadDropdownCss = injectCss(css);
+export const unloadDropdownCss = injectCss(classes.dropdownWrapper + " " + classes.dropdownSelect);
 
 interface DropdownOption {
     value: string;
@@ -31,9 +31,9 @@ function ChevronDown() {
 
 export function Dropdown(props: DropdownProps) {
     return (
-        <div class={`dropdown-wrapper ${props.class || ''}`}>
+        <div class={`${classes.dropdownWrapper} ${props.class || ''}`}>
             <select
-                class="dropdown-select"
+                class={classes.dropdownSelect}
                 value={props.value}
                 onChange={(e: Event) => props.onChange((e.currentTarget as HTMLSelectElement).value)}
             >
