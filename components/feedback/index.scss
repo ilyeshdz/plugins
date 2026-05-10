@@ -1,0 +1,20 @@
+.feedback {
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 14px;
+}
+
+.warning {
+    background-color: var(--background-feedback-warning);
+    color: var(--text-feedback-warning);
+}
+
+.info {
+    background-color: var(--background-feedback-info);
+    color: var(--text-feedback-info);
+}
+
+.critical {
+    background-color: var(--background-feedback-critical);
+    color: var(--text-feedback-critical);
+}
