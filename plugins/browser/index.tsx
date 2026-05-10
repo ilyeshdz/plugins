@@ -1,45 +1,30 @@
-import { PluginsPage, unloadPluginsCss } from "./pages/plugins.jsx";
-import { SettingsPage, unloadSettingsCss } from "./pages/settings.jsx";
+import { ThemesPage, onLoadThemes, onUnloadThemes } from "./pages/themes/index.jsx";
+import { PluginsPage } from "./pages/plugins/index.jsx";
+import { SettingsPage } from "./pages/settings/index.jsx";
 import { PluginsIcon } from "./icons/plugins-icon.jsx";
-import { unloadDropdownCss } from "../../components/dropdown.js";
+import { ThemesIcon } from "./icons/themes-icon.jsx";
+import { unloadDropdownCss } from "../../components/dropdown/index.js";
 
-const {
-    settings: {
-        registerSection
-    },
-    util: {
-        log
-    }
-} = shelter;
+const { settings: { registerSection }, util: { log } } = shelter;
 
 const allSettings = [
-    registerSection(
-        "divider"
-    ),
-    registerSection(
-        "header",
-        "Browser"
-    ),
-    registerSection(
-        "section",
-        "hdzilyes-plugins",
-        "Plugins",
-        PluginsPage,
-        {
-            icon: PluginsIcon
-        }
-    ),
-]
+    registerSection("divider"),
+    registerSection("header", "Browser"),
+    registerSection("section", "hdzilyes-plugins", "Plugins", PluginsPage, { icon: PluginsIcon }),
+    registerSection("section", "hdzilyes-themes", "Themes", ThemesPage, { icon: ThemesIcon }),
+];
 
-log("Settings registered")
+log("Settings registered");
 
 export function settings() {
     return <SettingsPage />;
 }
 
 export function onUnload() {
-    allSettings.forEach(setting => setting && setting());
-    unloadPluginsCss();
-    unloadSettingsCss();
+    allSettings.forEach(s => s?.());
     unloadDropdownCss();
+}
+
+export function onLoad() {
+    onLoadThemes();
 }
