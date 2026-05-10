@@ -1,3 +1,23 @@
-<div class="autosize index-main">
-  {{>pre_index}} {{#each plugins}} {{>plugin_card}} {{/each}} {{>post_index}} {{>footer}}
+<header class="header">
+  <h1 class="site-title">{{repo_name}}</h1>
+  <p class="site-desc">
+    A curated collection of stable, useful plugins that extend
+    <a href="https://github.com/uwu/shelter" target="_blank">Shelter</a>
+    with new features and functionality. Each plugin has been tested
+    to work with the latest version of Shelter.
+  </p>
+</header>
+
+{{>pre_index}}
+
+<div class="section-label">Plugins</div>
+
+<div class="plugin-list">
+  {{#each plugins}} {{>plugin_card}} {{/each}}
 </div>
+
+{{>post_index}}
+
+<footer class="footer">
+  Built by <a href="https://github.com/ilyeshdz" target="_blank">ilyeshdz</a>
+</footer>

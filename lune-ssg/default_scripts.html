@@ -1,22 +1,93 @@
-{{#if base_url}} {{else}}
 <script>
-{
-  const placeholders = document.getElementsByClassName("plugin-link-placeholder");
+(function() {
+  function getBaseUrl() {
+    var pathname = window.location.pathname.replace(/\/+$/, '').replace(/\/index\.html$/, '');
+    var parts = pathname.split('/').filter(Boolean);
+    if (parts.length > 1) {
+      parts.pop();
+    }
+    return window.location.origin + '/' + parts.join('/');
+  }
 
-  let href = window.location.href;
-  if (href.endsWith("/")) href = href.slice(0, -1);
+  function getPluginName() {
+    var pathname = window.location.pathname.replace(/\/+$/, '').replace(/\/index\.html$/, '');
+    var parts = pathname.split('/').filter(Boolean);
+    return parts[parts.length - 1] || '';
+  }
 
-  for (const placeholder of placeholders) {
-    const pluginName = placeholder.dataset.name;
+  var base = getBaseUrl();
+  var pluginName = getPluginName();
+  var pending = '\x7B\x7B';
 
-    if (!pluginName) placeholder.innerText = href;
-    else {
-      let href2 = href;
-      if (href2.endsWith("/" + pluginName)) href2 = href2.slice(0, -pluginName.length);
+  function getUrl(el) {
+    var parentLink = el.closest('a');
+    var href = parentLink ? parentLink.getAttribute('href') : null;
+    
+    if (href && href.indexOf(pending) === -1 && href !== '' && href !== '..') {
+      if (href.indexOf('http') === 0) return href;
+      return base + '/' + href;
+    }
+    
+    if (pluginName) {
+      return base + '/' + pluginName;
+    }
+    
+    return base;
+  }
 
-      placeholder.innerText = href2 + "/" + pluginName;
+  function updateAll() {
+    var buttons = document.querySelectorAll('.copy-btn, .plugin-detail-copy');
+    for (var i = 0; i < buttons.length; i++) {
+      var btn = buttons[i];
+      var url = getUrl(btn);
+      var row = btn.closest('.plugin-url-row') || btn.closest('.plugin-detail-url-box');
+      if (row) {
+        var textEl = row.querySelector('.url-text');
+        if (textEl) textEl.textContent = url;
+      }
     }
   }
-}
+
+  window.copyUrl = function(btn) {
+    var url = getUrl(btn);
+    if (!url) return;
+    navigator.clipboard.writeText(url).then(function() {
+      btn.setAttribute('data-copied', 'true');
+      btn.innerHTML = 'copied';
+      setTimeout(function() {
+        btn.setAttribute('data-copied', 'false');
+        btn.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg> copy';
+      }, 1500);
+    });
+  };
+
+  window.toggleTheme = function() {
+    var html = document.documentElement;
+    var current = html.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    var btn = document.querySelector('.theme-toggle');
+    if (btn) btn.textContent = next === 'dark' ? 'Light' : 'Dark';
+  };
+
+  function initTheme() {
+    var saved = localStorage.getItem('theme');
+    var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    var theme = saved || prefers;
+    document.documentElement.setAttribute('data-theme', theme);
+    var btn = document.querySelector('.theme-toggle');
+    if (btn) btn.textContent = theme === 'dark' ? 'Light' : 'Dark';
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      updateAll();
+    });
+  } else {
+    initTheme();
+    updateAll();
+  }
+})();
 </script>
-{{/if}}
