@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Plugin API - fetch, install, uninstall, and manage remote plugins
+ */
+
 const PLUGINS_SOURCE = "https://shindex.uwu.network/data";
 
 function getInstalledPlugins() {
@@ -29,6 +33,7 @@ export interface PluginRepo {
     plugins: RemotePlugin[];
 }
 
+/** Plugin with computed installed/enabled status */
 export interface Plugin extends RemotePlugin {
     enabled: boolean;
     installed: boolean;
@@ -53,6 +58,10 @@ function getPluginId(plugin: RemotePlugin): string | undefined {
     return findInstalled(plugin)?.[0];
 }
 
+/**
+ * Fetch all plugins from the registry
+ * @returns Array of Plugin objects with installed/enabled status
+ */
 export async function fetchPlugins(): Promise<Plugin[]> {
     try {
         const response = await fetch(PLUGINS_SOURCE);
@@ -81,6 +90,11 @@ export type FilterOptions = {
     status?: "all" | "enabled" | "disabled" | "installed";
 };
 
+/**
+ * Filter plugins by search query and status
+ * @param options - Filter criteria
+ * @returns Filtered array of plugins
+ */
 export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
     let plugins = await fetchPlugins();
 
@@ -108,10 +122,18 @@ export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
     return plugins;
 }
 
+/**
+ * Install a remote plugin
+ * @param plugin - Plugin to install
+ */
 export async function installPlugin(plugin: RemotePlugin): Promise<void> {
     await shelter.plugins.addRemotePlugin(plugin.name, plugin.url, true);
 }
 
+/**
+ * Uninstall an installed plugin
+ * @param plugin - Plugin to uninstall
+ */
 export async function uninstallPlugin(plugin: RemotePlugin): Promise<void> {
     const id = getPluginId(plugin);
     if (id) {
@@ -119,6 +141,10 @@ export async function uninstallPlugin(plugin: RemotePlugin): Promise<void> {
     }
 }
 
+/**
+ * Toggle plugin enabled state
+ * @param plugin - Plugin to toggle
+ */
 export async function togglePlugin(plugin: RemotePlugin): Promise<void> {
     const id = getPluginId(plugin);
     if (!id) return;
@@ -135,12 +161,20 @@ export async function togglePlugin(plugin: RemotePlugin): Promise<void> {
     shelter.plugins.editPlugin(id, { ...installed, on: !installed.on });
 }
 
+/**
+ * Check if a plugin has settings
+ * @param plugin - Plugin to check
+ */
 export function hasPluginSettings(plugin: RemotePlugin): boolean {
     const id = getPluginId(plugin);
     if (!id) return false;
     return !!shelter.plugins.getSettings(id);
 }
 
+/**
+ * Open plugin settings dialog
+ * @param plugin - Plugin whose settings to open
+ */
 export function showPluginSettings(plugin: RemotePlugin): void {
     const id = getPluginId(plugin);
     if (!id) return;

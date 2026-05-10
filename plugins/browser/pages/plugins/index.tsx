@@ -79,47 +79,52 @@ export function PluginsPage() {
                 <Header tag={HeaderTags.H3} margin={false}>Plugins</Header>
             </div>
 
-            <ItemGrid data={filteredPlugins} children={(items) => items.map((p: Plugin) => (
-                <ItemCard
-                    title={<Header tag={HeaderTags.H4} margin={false}>{p.name}</Header>}
-                    description={<Text tag={TextTags.textSM}>{p.description}</Text>}
-                    author={p.author}
-                    action={p.installed ? (
-                        <div class={classes.pluginToggleRow}>
-                            <SwitchItem
-                                checked={p.enabled}
-                                onChange={() => withRefresh(togglePlugin)(p)}
-                                hideBorder
-                            >{""}</SwitchItem>
+            <ItemGrid<Plugin>
+                data={filteredPlugins}
+                loading={() => plugins.loading}
+                emptyMessage="No plugins found"
+                children={(items) => items.map(p => (
+                    <ItemCard
+                        title={<Header tag={HeaderTags.H4} margin={false}>{p.name}</Header>}
+                        description={<Text tag={TextTags.textSM}>{p.description}</Text>}
+                        author={p.author}
+                        action={p.installed ? (
+                            <div class={classes.pluginToggleRow}>
+                                <SwitchItem
+                                    checked={p.enabled}
+                                    onChange={() => withRefresh(togglePlugin)(p)}
+                                    hideBorder
+                                >{""}</SwitchItem>
+                                <Button
+                                    color={ButtonColors.SECONDARY}
+                                    size={ButtonSizes.SMALL}
+                                    onClick={() => withRefresh(uninstallPlugin)(p)}
+                                >
+                                    Uninstall
+                                </Button>
+                            </div>
+                        ) : (
                             <Button
-                                color={ButtonColors.SECONDARY}
+                                color={ButtonColors.PRIMARY}
                                 size={ButtonSizes.SMALL}
-                                onClick={() => withRefresh(uninstallPlugin)(p)}
+                                onClick={() => withRefresh(installPlugin)(p)}
                             >
-                                Uninstall
+                                Install
                             </Button>
-                        </div>
-                    ) : (
-                        <Button
-                            color={ButtonColors.PRIMARY}
-                            size={ButtonSizes.SMALL}
-                            onClick={() => withRefresh(installPlugin)(p)}
-                        >
-                            Install
-                        </Button>
-                    )}
-                    extra={p.installed && hasPluginSettings(p) && (
-                        <span
-                            class={classes.pluginIconSettings}
-                            title="Settings"
-                            onClick={() => showPluginSettings(p)}
-                        >
-                            <SettingsIcon />
-                        </span>
-                    )}
-                    actionsClass={classes.pluginActions}
-                />
-            ))} />
+                        )}
+                        extra={p.installed && hasPluginSettings(p) && (
+                            <span
+                                class={classes.pluginIconSettings}
+                                title="Settings"
+                                onClick={() => showPluginSettings(p)}
+                            >
+                                <SettingsIcon />
+                            </span>
+                        )}
+                        actionsClass={classes.pluginActions}
+                    />
+                ))}
+            />
         </div>
     );
 }

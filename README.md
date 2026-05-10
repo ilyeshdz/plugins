@@ -7,3 +7,4 @@ A collection of stable and useful plugins for Shelter.
 ## Plugins
 
 - [Browser](https://ilyeshdz.github.io/plugins/browser)
+- [Leaver](https://ilyeshdz.github.io/plugins/leaver)
