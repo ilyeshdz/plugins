@@ -88,13 +88,13 @@ export function PluginsPage() {
                         <div class={classes.pluginToggleRow}>
                             <SwitchItem
                                 checked={p.enabled}
-                                onChange={withRefresh(togglePlugin)}
+                                onChange={() => withRefresh(togglePlugin)(p)}
                                 hideBorder
                             >{""}</SwitchItem>
                             <Button
                                 color={ButtonColors.SECONDARY}
                                 size={ButtonSizes.SMALL}
-                                onClick={withRefresh(uninstallPlugin)}
+                                onClick={() => withRefresh(uninstallPlugin)(p)}
                             >
                                 Uninstall
                             </Button>
@@ -103,7 +103,7 @@ export function PluginsPage() {
                         <Button
                             color={ButtonColors.PRIMARY}
                             size={ButtonSizes.SMALL}
-                            onClick={withRefresh(installPlugin)}
+                            onClick={() => withRefresh(installPlugin)(p)}
                         >
                             Install
                         </Button>
