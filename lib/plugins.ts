@@ -109,7 +109,8 @@ export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
 }
 
 export async function installPlugin(plugin: RemotePlugin): Promise<void> {
-    await shelter.plugins.addRemotePlugin(plugin.name, plugin.url, true);
+    const src = plugin.url.endsWith("/") ? `${plugin.url}plugin.js` : `${plugin.url}/plugin.js`;
+    await shelter.plugins.addRemotePlugin(plugin.name, src, true);
 }
 
 export async function uninstallPlugin(plugin: RemotePlugin): Promise<void> {
