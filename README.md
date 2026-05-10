@@ -21,3 +21,4 @@ Browser just works. You open it, you browse, you install. It handles both plugin
 It turned out exactly how I wanted: simple, reliable, and actually pleasant to use.
 
 ### Demo
+![Browser Demo](https://i.imgur.com/dviCeyO.gif)
