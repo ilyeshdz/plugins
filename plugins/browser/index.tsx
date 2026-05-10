@@ -1,4 +1,4 @@
-import { ThemesPage, onLoadThemes, onUnloadThemes } from "./pages/themes/index.jsx";
+import { ThemesPage, onLoadThemes } from "./pages/themes/index.jsx";
 import { PluginsPage } from "./pages/plugins/index.jsx";
 import { SettingsPage } from "./pages/settings/index.jsx";
 import { PluginsIcon } from "./icons/plugins-icon.jsx";
