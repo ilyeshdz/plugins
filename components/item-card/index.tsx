@@ -1,11 +1,12 @@
+import type { JSX } from "solid-js";
 import classes from "./index.scss";
 
 interface ItemCardProps {
-    title: any;
-    description: any;
+    title: JSX.Element;
+    description: JSX.Element;
     author: string;
-    action: any;
-    extra?: any;
+    action: JSX.Element;
+    extra?: JSX.Element;
     actionsClass?: string;
 }
 
