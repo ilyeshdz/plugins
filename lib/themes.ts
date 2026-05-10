@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Themes API - browse, install, and manage CSS themes
+ */
+
 const THEMES_SOURCE = "https://themes.equicord.org/api/themes";
 
 const makeThemeId = (name: string) => `theme-${name.replace(/[^a-zA-Z0-9]/g, "-")}`;
@@ -34,6 +38,7 @@ export interface InstalledTheme {
     css: string;
 }
 
+/** Get all installed themes from store */
 export function getStoredThemes(): InstalledTheme[] {
     return shelter.plugin.store.themes || [];
 }
@@ -42,10 +47,15 @@ function saveStoredThemes(themes: InstalledTheme[]): void {
     shelter.plugin.store.themes = themes;
 }
 
+/** Get currently active theme name */
 export function getActiveTheme(): string | null {
     return shelter.plugin.store.activeTheme || null;
 }
 
+/**
+ * Set the active theme
+ * @param name - Theme name to activate, or null for default Discord theme
+ */
 export function setActiveTheme(name: string | null): void {
     const prev = getActiveTheme();
     if (prev && prev !== name) {
@@ -64,6 +74,10 @@ export function setActiveTheme(name: string | null): void {
     }
 }
 
+/**
+ * Check if a remote theme is already installed
+ * @param theme - Theme to check
+ */
 export function isThemeInstalled(theme: RemoteTheme): boolean {
     return getStoredThemes().some(
         t => t.name === theme.name &&
@@ -90,6 +104,10 @@ function uninjectThemeCss(name: string): void {
     style?.remove();
 }
 
+/**
+ * Fetch all themes from the registry
+ * @returns Array of themes with installed status
+ */
 export async function fetchThemes(): Promise<(RemoteTheme & { installed: boolean })[]> {
     try {
         const response = await fetch(THEMES_SOURCE, {
@@ -111,14 +129,21 @@ export async function fetchThemes(): Promise<(RemoteTheme & { installed: boolean
     }
 }
 
+/** Filter themes (currently just fetches all) */
 export async function filterThemes(): Promise<(RemoteTheme & { installed: boolean })[]> {
     return fetchThemes();
 }
 
+/**
+ * Install a theme
+ * @param theme - Theme to install
+ */
 export async function installTheme(theme: RemoteTheme): Promise<void> {
     if (isThemeInstalled(theme)) return;
 
-    const css = atob(theme.content);
+    const css = typeof atob === "function"
+        ? atob(theme.content)
+        : Buffer.from(theme.content, "base64").toString("utf-8");
 
     const installedTheme: InstalledTheme = {
         name: theme.name,
@@ -132,16 +157,23 @@ export async function installTheme(theme: RemoteTheme): Promise<void> {
     saveStoredThemes(themes);
 
     if (!getActiveTheme()) {
-        const id = injectThemeCss(installedTheme);
-        (installedTheme as any).injectedId = id;
+        injectThemeCss(installedTheme);
         shelter.plugin.store.activeTheme = installedTheme.name;
     }
 }
 
+/**
+ * Uninstall a theme
+ * @param theme - Theme to uninstall
+ */
 export async function uninstallTheme(theme: RemoteTheme): Promise<void> {
     await removeStoredTheme(theme.name);
 }
 
+/**
+ * Remove a theme from storage by name
+ * @param name - Theme name to remove
+ */
 export async function removeStoredTheme(name: string): Promise<void> {
     const themes = getStoredThemes();
     const index = themes.findIndex(t => t.name === name);
@@ -163,6 +195,7 @@ export async function removeStoredTheme(name: string): Promise<void> {
     }
 }
 
+/** Load active theme CSS into document on plugin load */
 export function loadInstalledThemes(): void {
     const active = getActiveTheme();
     if (!active) return;
@@ -171,6 +204,7 @@ export function loadInstalledThemes(): void {
     if (theme) injectThemeCss(theme);
 }
 
+/** Remove all theme CSS from document on plugin unload */
 export function unloadInstalledThemes(): void {
     for (const theme of getStoredThemes()) {
         uninjectThemeCss(theme.name);
