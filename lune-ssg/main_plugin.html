@@ -3,8 +3,8 @@
   <p class="site-desc">
     A curated collection of stable, useful plugins that extend
     <a href="https://github.com/uwu/shelter" target="_blank">Shelter</a>
-    with new features and functionality. Each plugin has been tested
-    to work with the latest version of Shelter.
+    with new features and functionality. Each plugin has been tested to work
+    with the latest version of Shelter.
   </p>
 </header>
 
@@ -14,22 +14,41 @@
   {{#if has_index}}
   <a href=".." class="plugin-detail-back">← Back to plugins</a>
   {{/if}}
-  
+
   <h1 class="plugin-detail-title">{{name}}</h1>
-  <div class="plugin-detail-meta">plugin</div>
-  
+  <div class="plugin-detail-meta">
+    plugin {{#if version}}
+    <span class="plugin-detail-version">{{version}}</span>
+    {{/if}}
+  </div>
+
   <div class="plugin-detail-desc">{{>description}}</div>
-  
+
   <div class="plugin-detail-url-box">
     <div class="plugin-detail-url url-text"></div>
     <button class="plugin-detail-copy" onclick="copyUrl(this)">
-      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      <svg
+        width="10"
+        height="10"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+        <path
+          d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+        ></path>
+      </svg>
       copy
     </button>
   </div>
-  
+
   <div class="plugin-after">
-    To install this plugin, copy the URL above and paste it into Shelter's plugin installer under Settings → Shelter → Plugins.
+    To install this plugin, copy the URL above and paste it into Shelter's
+    plugin installer under Settings → Shelter → Plugins.
   </div>
 </div>
 

@@ -1,23 +1,23 @@
 .pluginIconSettings {
-    width: 18px;
-    height: 18px;
-    color: var(--header-secondary);
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: color 0.15s;
-    margin-top: 4px;
+  width: 18px;
+  height: 18px;
+  color: var(--header-secondary);
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: color 0.15s;
+  margin-top: 4px;
 
-    &:hover {
-        color: var(--interactive-hover);
-    }
+  &:hover {
+    color: var(--interactive-hover);
+  }
 }
 
 .pluginActions > div > div {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .pluginToggleRow {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }

@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,9 +14,9 @@
   --bg: #fafaf8;
   --bg-card: #ffffff;
   --accent: #2c5282;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
-  --serif: 'Lora', Georgia, serif;
+  --mono: "IBM Plex Mono", monospace;
+  --sans: "IBM Plex Sans", sans-serif;
+  --serif: "Lora", Georgia, serif;
 }
 
 [data-theme="dark"] {
@@ -62,7 +64,9 @@ a {
   color: var(--text-faint);
   font-family: var(--mono);
   font-size: 0.75rem;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .theme-toggle:hover {
@@ -148,6 +152,14 @@ a {
   letter-spacing: 0.04em;
 }
 
+.plugin-version {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
 .plugin-desc {
   font-size: 0.875rem;
   color: var(--text-muted);
@@ -184,7 +196,9 @@ a {
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.03em;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .copy-btn:hover {
@@ -228,6 +242,16 @@ a {
   color: var(--text-faint);
   letter-spacing: 0.04em;
   margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.plugin-detail-version {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  opacity: 0.8;
 }
 
 .plugin-detail-desc {
@@ -267,7 +291,9 @@ a {
   padding: 2px 8px;
   cursor: pointer;
   letter-spacing: 0.03em;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .plugin-detail-copy:hover {

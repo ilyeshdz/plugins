@@ -15,18 +15,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: lts/*
+          cache: pnpm
 
-      - name: Deps
-        run: |
-          npm install --global pnpm
-          pnpm i
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-      - name: Build plugin(s)
-        run: pnpm lune ci
+      - name: Check code
+        run: pnpm check
 
       - name: Run SSG
         run: |

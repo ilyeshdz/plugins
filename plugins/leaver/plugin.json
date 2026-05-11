@@ -1,5 +1,6 @@
 {
   "name": "Leaver",
   "author": "Ilyes Hernandez",
-  "description": "Leave mutliple servers at once"
+  "description": "Leave multiple servers at once",
+  "version": "1.0.0"
 }

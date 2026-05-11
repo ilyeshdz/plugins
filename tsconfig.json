@@ -1,11 +1,22 @@
 {
   "compilerOptions": {
     "jsx": "preserve",
-    "types": ["./css.d.ts"],
+    "jsxImportSource": "solid-js",
+    "types": ["solid-js", "./css.d.ts"],
     "target": "es6",
     "lib": ["es2020", "dom"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext"
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
-  "include": ["plugins/**/*.ts", "plugins/**/*.tsx", "node_modules/@uwu/shelter-defs/**/*.d.ts", "lib/**/*.ts", "components/**/*.tsx"]
+  "include": [
+    "plugins/**/*.ts",
+    "plugins/**/*.tsx",
+    "node_modules/@uwu/shelter-defs/**/*.d.ts",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "components/**/*.tsx"
+  ]
 }
