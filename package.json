@@ -1,8 +1,26 @@
 {
+  "workspaces": [
+    "plugins/*"
+  ],
+  "type": "module",
+  "scripts": {
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "lint:github": "oxlint --format=github",
+    "prepare": "husky"
+  },
   "devDependencies": {
     "@uwu/lune": "^1.6.2",
-    "@uwu/shelter-defs": "^1.4.1"
+    "@uwu/shelter-defs": "^1.4.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.4",
+    "oxfmt": "^0.48.0",
+    "oxlint": "^1.63.0"
   },
-  "type": "module",
-  "workspaces": ["plugins/*"]
+  "lint-staged": {
+    "*": "oxfmt --no-error-on-unmatched-pattern && oxlint --fix",
+    "*.{ts,tsx,js,jsx,mjs,cjs}": "oxlint"
+  }
 }
