@@ -1,44 +1,44 @@
 .card {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 16px;
-    background: var(--background-muted);
-    border: 1px solid var(--background-accent);
-    border-radius: 8px;
-    transition: transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--background-muted);
+  border: 1px solid var(--background-accent);
+  border-radius: 8px;
+  transition: transform 0.15s;
 
-    &:hover {
-        transform: translateY(-1px);
-    }
+  &:hover {
+    transform: translateY(-1px);
+  }
 }
 
 .header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .titleArea {
-    flex: 1;
-    min-width: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .descArea {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
 }
 
 .actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
 }
 
 .author {
-    color: var(--text-muted);
+  color: var(--text-muted);
 }

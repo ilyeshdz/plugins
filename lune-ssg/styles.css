@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -12,9 +14,9 @@
   --bg: #fafaf8;
   --bg-card: #ffffff;
   --accent: #2c5282;
-  --mono: 'IBM Plex Mono', monospace;
-  --sans: 'IBM Plex Sans', sans-serif;
-  --serif: 'Lora', Georgia, serif;
+  --mono: "IBM Plex Mono", monospace;
+  --sans: "IBM Plex Sans", sans-serif;
+  --serif: "Lora", Georgia, serif;
 }
 
 [data-theme="dark"] {
@@ -62,7 +64,9 @@ a {
   color: var(--text-faint);
   font-family: var(--mono);
   font-size: 0.75rem;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .theme-toggle:hover {
@@ -184,7 +188,9 @@ a {
   white-space: nowrap;
   flex-shrink: 0;
   letter-spacing: 0.03em;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .copy-btn:hover {
@@ -267,7 +273,9 @@ a {
   padding: 2px 8px;
   cursor: pointer;
   letter-spacing: 0.03em;
-  transition: color 0.15s, border-color 0.15s;
+  transition:
+    color 0.15s,
+    border-color 0.15s;
 }
 
 .plugin-detail-copy:hover {

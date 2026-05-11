@@ -20,7 +20,7 @@
     "oxlint": "^1.63.0"
   },
   "lint-staged": {
-    "*": "oxfmt --no-error-on-unmatched-pattern && oxlint --fix",
+    "*": "oxfmt --no-error-on-unmatched-pattern && oxlint",
     "*.{ts,tsx,js,jsx,mjs,cjs}": "oxlint"
   }
 }
