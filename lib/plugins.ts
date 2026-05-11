@@ -66,26 +66,21 @@ function getPluginId(plugin: RemotePlugin): string | undefined {
  * @returns Array of Plugin objects with installed/enabled status
  */
 export async function fetchPlugins(): Promise<Plugin[]> {
-  try {
-    const response = await fetch(PLUGINS_SOURCE);
-    if (!response.ok) throw new Error("Failed to fetch plugins");
-    const repos: PluginRepo[] = await response.json();
+  const response = await fetch(PLUGINS_SOURCE);
+  if (!response.ok) throw new Error("Failed to fetch plugins");
+  const repos: PluginRepo[] = await response.json();
 
-    const plugins: Plugin[] = [];
-    for (const repo of repos) {
-      for (const plugin of repo.plugins) {
-        plugins.push({
-          ...plugin,
-          enabled: isPluginEnabled(plugin),
-          installed: isPluginInstalled(plugin),
-        });
-      }
+  const plugins: Plugin[] = [];
+  for (const repo of repos) {
+    for (const plugin of repo.plugins) {
+      plugins.push({
+        ...plugin,
+        enabled: isPluginEnabled(plugin),
+        installed: isPluginInstalled(plugin),
+      });
     }
-    return plugins;
-  } catch (e) {
-    console.warn("Failed to fetch plugins:", e);
-    return [];
   }
+  return plugins;
 }
 
 export type FilterOptions = {

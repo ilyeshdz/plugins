@@ -11,8 +11,11 @@ import {
   hasPluginSettings,
   showPluginSettings,
   type Plugin,
-  type FilterOptions,
 } from "../../../../lib/api.js";
+import {
+  filterPluginList,
+  type PluginStatusFilter,
+} from "../../../../lib/browser-list.js";
 import { SettingsIcon } from "../../icons/settings-icon.jsx";
 
 import sharedClasses from "../shared.scss";
@@ -34,28 +37,13 @@ const {
 
 export function PluginsPage() {
   const [search, setSearch] = createSignal("");
-  const [filter, setFilter] =
-    createSignal<NonNullable<FilterOptions["status"]>>("all");
+  const [filter, setFilter] = createSignal<PluginStatusFilter>("all");
   const [refetchKey, setRefetchKey] = createSignal(0);
 
   const [plugins] = createResource(() => refetchKey(), fetchPlugins);
 
   const filteredPlugins = createMemo(() => {
-    const items = plugins() ?? [];
-    const query = search().toLowerCase();
-    const status = filter();
-
-    return items.filter((p) => {
-      if (status === "enabled" && !(p.installed && p.enabled)) return false;
-      if (status === "disabled" && !(p.installed && !p.enabled)) return false;
-      if (status === "installed" && !p.installed) return false;
-      if (!query) return true;
-      return (
-        p.name.toLowerCase().includes(query) ||
-        p.description.toLowerCase().includes(query) ||
-        p.author.toLowerCase().includes(query)
-      );
-    });
+    return filterPluginList(plugins() ?? [], search(), filter());
   });
 
   const refresh = () => setRefetchKey((k) => k + 1);
@@ -98,6 +86,7 @@ export function PluginsPage() {
 
       <ItemGrid<Plugin>
         data={filteredPlugins}
+        error={() => plugins.error}
         loading={() => plugins.loading}
         emptyMessage="No plugins found"
         children={(items) =>

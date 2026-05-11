@@ -114,24 +114,19 @@ function uninjectThemeCss(name: string): void {
 export async function fetchThemes(): Promise<
   (RemoteTheme & { installed: boolean })[]
 > {
-  try {
-    const response = await fetch(THEMES_SOURCE, {
-      headers: {
-        Accept: "*/*",
-        Referer: "https://themes.equicord.org/",
-      },
-    });
-    if (!response.ok) throw new Error("Failed to fetch themes");
-    const remoteThemes: RemoteTheme[] = await response.json();
+  const response = await fetch(THEMES_SOURCE, {
+    headers: {
+      Accept: "*/*",
+      Referer: "https://themes.equicord.org/",
+    },
+  });
+  if (!response.ok) throw new Error("Failed to fetch themes");
+  const remoteThemes: RemoteTheme[] = await response.json();
 
-    return remoteThemes.map((theme) => ({
-      ...theme,
-      installed: isThemeInstalled(theme),
-    }));
-  } catch (e) {
-    console.warn("Failed to fetch themes:", e);
-    return [];
-  }
+  return remoteThemes.map((theme) => ({
+    ...theme,
+    installed: isThemeInstalled(theme),
+  }));
 }
 
 /** Filter themes (currently just fetches all) */

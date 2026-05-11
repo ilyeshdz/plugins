@@ -10,6 +10,10 @@ import {
   loadInstalledThemes,
   type RemoteTheme,
 } from "../../../../lib/api.js";
+import {
+  filterThemeList,
+  type ThemeStatusFilter,
+} from "../../../../lib/browser-list.js";
 
 import sharedClasses from "../shared.scss";
 import classes from "./index.scss";
@@ -33,25 +37,13 @@ export function onLoadThemes(): void {
 
 export function ThemesPage() {
   const [search, setSearch] = createSignal("");
-  const [filter, setFilter] = createSignal<"all" | "installed">("all");
+  const [filter, setFilter] = createSignal<ThemeStatusFilter>("all");
   const [refetchKey, setRefetchKey] = createSignal(0);
 
   const [themes] = createResource(() => refetchKey(), fetchThemes);
 
   const filteredThemes = createMemo(() => {
-    const items = themes() ?? [];
-    const query = search().toLowerCase();
-    const status = filter();
-
-    return items.filter((t) => {
-      if (status === "installed" && !t.installed) return false;
-      if (!query) return true;
-      return (
-        t.name.toLowerCase().includes(query) ||
-        t.description.toLowerCase().includes(query) ||
-        t.author?.discord_name?.toLowerCase().includes(query)
-      );
-    });
+    return filterThemeList(themes() ?? [], search(), filter());
   });
 
   const refresh = () => setRefetchKey((k) => k + 1);
@@ -96,6 +88,7 @@ export function ThemesPage() {
 
       <ItemGrid<RemoteTheme & { installed: boolean }>
         data={filteredThemes}
+        error={() => themes.error}
         loading={() => themes.loading}
         emptyMessage="No themes found"
         children={(items) =>

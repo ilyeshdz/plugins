@@ -5,7 +5,7 @@ import classes from "./index.scss";
 interface ItemCardProps {
   title: JSX.Element;
   description: JSX.Element;
-  author: string;
+  author?: string;
   action: JSX.Element;
   extra?: JSX.Element;
   actionsClass?: string;
@@ -20,7 +20,9 @@ export function ItemCard(props: ItemCardProps) {
       </div>
       <div class={classes.descArea}>{props.description}</div>
       <div class={`${classes.actions} ${props.actionsClass || ""}`}>
-        <span class={classes.author}>by {props.author}</span>
+        <span class={classes.author}>
+          {props.author ? `by ${props.author}` : ""}
+        </span>
         {props.action}
       </div>
     </div>
