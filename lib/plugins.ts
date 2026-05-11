@@ -2,11 +2,20 @@
  * @fileoverview Plugin API - fetch, install, uninstall, and manage remote plugins
  */
 
-const PLUGINS_SOURCE = "https://shindex.uwu.network/data";
+import {
+  addRemotePlugin,
+  findInstalledPlugin,
+  getInstalledPluginId,
+  getInstalledPlugins,
+  hasSettings,
+  removePlugin,
+  showSettings,
+  startPlugin,
+  stopPlugin,
+  updateStoredPlugin,
+} from "./shelter/plugins.js";
 
-function getInstalledPlugins() {
-  return shelter?.plugins?.installedPlugins?.() || {};
-}
+const PLUGINS_SOURCE = "https://shindex.uwu.network/data";
 
 export interface RemotePlugin {
   name: string;
@@ -39,24 +48,17 @@ export interface Plugin extends RemotePlugin {
   installed: boolean;
 }
 
-function findInstalled(plugin: RemotePlugin): [string, any] | undefined {
-  return Object.entries(getInstalledPlugins()).find(
-    ([, p]: [string, any]) =>
-      p.manifest?.name === plugin.name && p.manifest?.author === plugin.author,
-  );
-}
-
 function isPluginInstalled(plugin: RemotePlugin): boolean {
-  return !!findInstalled(plugin);
+  return !!findInstalledPlugin(plugin);
 }
 
 function isPluginEnabled(plugin: RemotePlugin): boolean {
-  const entry = findInstalled(plugin);
+  const entry = findInstalledPlugin(plugin);
   return entry?.[1].on ?? false;
 }
 
 function getPluginId(plugin: RemotePlugin): string | undefined {
-  return findInstalled(plugin)?.[0];
+  return getInstalledPluginId(plugin);
 }
 
 /**
@@ -129,7 +131,7 @@ export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
  * @param plugin - Plugin to install
  */
 export async function installPlugin(plugin: RemotePlugin): Promise<void> {
-  await shelter.plugins.addRemotePlugin(plugin.name, plugin.url, true);
+  await addRemotePlugin(plugin.name, plugin.url);
 }
 
 /**
@@ -139,7 +141,7 @@ export async function installPlugin(plugin: RemotePlugin): Promise<void> {
 export async function uninstallPlugin(plugin: RemotePlugin): Promise<void> {
   const id = getPluginId(plugin);
   if (id) {
-    shelter.plugins.removePlugin(id);
+    removePlugin(id);
   }
 }
 
@@ -155,12 +157,12 @@ export async function togglePlugin(plugin: RemotePlugin): Promise<void> {
   if (!installed) return;
 
   if (installed.on) {
-    shelter.plugins.stopPlugin(id);
+    stopPlugin(id);
   } else {
-    shelter.plugins.startPlugin(id);
+    startPlugin(id);
   }
 
-  shelter.plugins.editPlugin(id, { ...installed, on: !installed.on });
+  updateStoredPlugin(id, { ...installed, on: !installed.on });
 }
 
 /**
@@ -170,7 +172,7 @@ export async function togglePlugin(plugin: RemotePlugin): Promise<void> {
 export function hasPluginSettings(plugin: RemotePlugin): boolean {
   const id = getPluginId(plugin);
   if (!id) return false;
-  return !!shelter.plugins.getSettings(id);
+  return hasSettings(id);
 }
 
 /**
@@ -180,5 +182,5 @@ export function hasPluginSettings(plugin: RemotePlugin): boolean {
 export function showPluginSettings(plugin: RemotePlugin): void {
   const id = getPluginId(plugin);
   if (!id) return;
-  shelter.plugins.showSettingsFor(id);
+  showSettings(id);
 }

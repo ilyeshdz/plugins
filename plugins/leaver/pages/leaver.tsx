@@ -13,6 +13,7 @@ import {
   getGuilds,
   type Guild,
 } from "../../../lib/leaver.js";
+import { getCurrentUserId } from "../../../lib/shelter/guilds.js";
 
 import classes from "./leaver.scss";
 
@@ -48,13 +49,6 @@ function getInitials(name: string): string {
 }
 
 export function LeaverPage() {
-  const getCurrentUserId = () => {
-    const userStore = shelter.flux.stores.UserStore as unknown as {
-      getCurrentUser: () => { id: string };
-    };
-    return userStore.getCurrentUser().id;
-  };
-
   const currentUserId = getCurrentUserId();
   const [guilds, setGuilds] = createSignal<Guild[]>([]);
   const [search, setSearch] = createSignal("");

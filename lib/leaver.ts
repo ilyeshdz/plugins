@@ -3,6 +3,11 @@
  */
 
 import { createQueue, type Queue, type QueueItem } from "./queue.js";
+import {
+  getGuilds as getShelterGuilds,
+  type ShelterGuild,
+} from "./shelter/guilds.js";
+import { leaveGuild as leaveShelterGuild } from "./shelter/http.js";
 
 const {
   ui: { showToast, ToastColors },
@@ -21,14 +26,7 @@ export interface Guild {
  * @returns Array of Guild objects
  */
 export function getGuilds(): Guild[] {
-  const store = shelter.flux.stores.GuildStore as unknown as {
-    getGuilds: () => Record<
-      string,
-      { id: string; name: string; icon: string | null; ownerId: string }
-    >;
-  };
-  const rawGuilds = store.getGuilds();
-  return Object.values(rawGuilds).map((g) => ({
+  return getShelterGuilds().map((g: ShelterGuild) => ({
     id: g.id,
     name: g.name,
     icon: g.icon,
@@ -41,12 +39,7 @@ export function getGuilds(): Guild[] {
  * @param guildId - The Discord guild ID to leave
  */
 export async function leaveGuild(guildId: string): Promise<void> {
-  await shelter.http.ready;
-  await shelter.http.del?.({
-    url: `/users/@me/guilds/${guildId}`,
-    body: JSON.stringify({ lurking: false }),
-    oldFormErrors: false,
-  });
+  await leaveShelterGuild(guildId);
 }
 
 /** Leaver queue item data */

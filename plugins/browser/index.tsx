@@ -3,6 +3,11 @@ import {
   createChangelogButton,
   registerChangelogOnLoad,
 } from "../../lib/changelog.js";
+import {
+  registerDivider,
+  registerHeader,
+  registerPage,
+} from "../../lib/shelter/settings.js";
 import { PluginsIcon } from "./icons/plugins-icon.jsx";
 import { ThemesIcon } from "./icons/themes-icon.jsx";
 import { PluginsPage } from "./pages/plugins/index.jsx";
@@ -11,7 +16,6 @@ import { ThemesPage, onLoadThemes } from "./pages/themes/index.jsx";
 import { version } from "./plugin.json";
 
 const {
-  settings: { registerSection },
   util: { log },
 } = shelter;
 
@@ -48,14 +52,10 @@ export const changelogOptions = {
 };
 
 const allSettings = [
-  registerSection("divider"),
-  registerSection("header", "Browser"),
-  registerSection("section", "hdzilyes-plugins", "Plugins", PluginsPage, {
-    icon: PluginsIcon,
-  }),
-  registerSection("section", "hdzilyes-themes", "Themes", ThemesPage, {
-    icon: ThemesIcon,
-  }),
+  registerDivider(),
+  registerHeader("Browser"),
+  registerPage("hdzilyes-plugins", "Plugins", PluginsPage, PluginsIcon),
+  registerPage("hdzilyes-themes", "Themes", ThemesPage, ThemesIcon),
 ];
 
 log("Settings registered");

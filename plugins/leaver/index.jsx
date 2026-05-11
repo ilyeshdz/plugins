@@ -1,5 +1,4 @@
 const {
-  settings: { registerSection },
   util: { log },
 } = shelter;
 
@@ -7,6 +6,7 @@ import {
   createChangelogButton,
   registerChangelogOnLoad,
 } from "../../lib/changelog.js";
+import { registerPage } from "../../lib/shelter/settings.js";
 import { LeaverIcon } from "./icons/leaver.jsx";
 import { LeaverPage } from "./pages/leaver.jsx";
 import { version } from "./plugin.json";
@@ -42,14 +42,11 @@ export const changelogOptions = {
   ],
 };
 
-const unregister = registerSection(
-  "section",
+const unregister = registerPage(
   "hdzilyes-leaver",
   "Leaver",
   LeaverPage,
-  {
-    icon: LeaverIcon,
-  },
+  LeaverIcon,
 );
 
 log("Leaver plugin loaded");
