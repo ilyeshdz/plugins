@@ -14,6 +14,8 @@ import {
   type Guild,
 } from "../../../lib/leaver.js";
 import { getCurrentUserId } from "../../../lib/shelter/guilds.js";
+import { GuildRow } from "./guild-row.jsx";
+import { LeaverProgress } from "./leaver-progress.jsx";
 
 import classes from "./leaver.scss";
 
@@ -22,7 +24,6 @@ const {
     Button,
     ButtonSizes,
     ButtonColors,
-    Checkbox,
     Header,
     HeaderTags,
     TextBox,
@@ -31,22 +32,6 @@ const {
     openConfirmationModal,
   },
 } = shelter;
-
-function getGuildIconUrl(
-  guildId: string,
-  icon: string | null,
-): string | undefined {
-  if (!icon) return undefined;
-  return `https://cdn.discordapp.com/icons/${guildId}/${icon}.png?size=64`;
-}
-
-function getInitials(name: string): string {
-  const words = name.split(" ");
-  if (words.length >= 2) {
-    return (words[0][0] + words[1][0]).toUpperCase();
-  }
-  return name.slice(0, 2).toUpperCase();
-}
 
 export function LeaverPage() {
   const currentUserId = getCurrentUserId();
@@ -77,14 +62,13 @@ export function LeaverPage() {
     );
   });
 
-  const toggleSelect = (id: string, e: Event) => {
-    e.stopPropagation();
+  const setGuildSelected = (id: string, checked: boolean) => {
     setSelected((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(id)) {
-        newSet.delete(id);
-      } else {
+      if (checked) {
         newSet.add(id);
+      } else {
+        newSet.delete(id);
       }
       return newSet;
     });
@@ -174,40 +158,16 @@ export function LeaverPage() {
       <Show
         when={!isRunning()}
         fallback={
-          <div class={classes.runningState}>
-            <div class={classes.progressContainer}>
-              <div class={classes.progressBar}>
-                <div
-                  class={classes.progressFill}
-                  style={{ width: `${stats().percent}%` }}
-                />
-              </div>
-              <div class={classes.progressText}>
-                {stats().completed} of {stats().total}
-                {stats().failed > 0 && ` (${stats().failed} failed)`}
-              </div>
-            </div>
-
-            <Show when={isQueueCompleted()}>
-              <Button
-                size={ButtonSizes.MEDIUM}
-                color={ButtonColors.PRIMARY}
-                onClick={resetQueue}
-              >
-                Done
-              </Button>
-            </Show>
-
-            <Show when={isQueueActive()}>
-              <Button
-                size={ButtonSizes.MEDIUM}
-                color={ButtonColors.RED}
-                onClick={stopQueue}
-              >
-                Stop
-              </Button>
-            </Show>
-          </div>
+          <LeaverProgress
+            completed={stats().completed}
+            failed={stats().failed}
+            total={stats().total}
+            percent={stats().percent}
+            completedQueue={isQueueCompleted()}
+            activeQueue={isQueueActive()}
+            onDone={resetQueue}
+            onStop={stopQueue}
+          />
         }
       >
         <div class={classes.header}>
@@ -249,39 +209,13 @@ export function LeaverPage() {
               {(guild) => {
                 const isSelected = () => selected().has(guild.id);
                 return (
-                  <div
-                    class={`${classes.guildRow} ${isSelected() ? classes.guildRowSelected : ""}`}
-                    onClick={(e) => toggleSelect(guild.id, e)}
-                  >
-                    {guild.icon ? (
-                      <img
-                        src={getGuildIconUrl(guild.id, guild.icon)}
-                        class={classes.guildIcon}
-                        alt={guild.name}
-                      />
-                    ) : (
-                      <div class={classes.guildIconPlaceholder}>
-                        {getInitials(guild.name)}
-                      </div>
-                    )}
-                    <div class={classes.guildName}>{guild.name}</div>
-                    <div class={classes.checkWrap}>
-                      <Checkbox
-                        checked={isSelected()}
-                        onChange={(checked: boolean) => {
-                          setSelected((prev) => {
-                            const newSet = new Set(prev);
-                            if (checked) {
-                              newSet.add(guild.id);
-                            } else {
-                              newSet.delete(guild.id);
-                            }
-                            return newSet;
-                          });
-                        }}
-                      />
-                    </div>
-                  </div>
+                  <GuildRow
+                    guild={guild}
+                    selected={isSelected()}
+                    onSelectedChange={(checked) =>
+                      setGuildSelected(guild.id, checked)
+                    }
+                  />
                 );
               }}
             </For>
