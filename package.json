@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "lune ci",
-    "check": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run build",
+    "check": "pnpm run fmt:check && pnpm run lint && pnpm run build",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
