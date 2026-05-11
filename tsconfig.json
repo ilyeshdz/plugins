@@ -5,13 +5,15 @@
     "target": "es6",
     "lib": ["es2020", "dom"],
     "module": "nodenext",
-    "moduleResolution": "nodenext"
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true
   },
   "include": [
     "plugins/**/*.ts",
     "plugins/**/*.tsx",
     "node_modules/@uwu/shelter-defs/**/*.d.ts",
     "lib/**/*.ts",
+    "lib/**/*.tsx",
     "components/**/*.tsx"
   ]
 }

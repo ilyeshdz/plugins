@@ -152,6 +152,14 @@ a {
   letter-spacing: 0.04em;
 }
 
+.plugin-version {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
 .plugin-desc {
   font-size: 0.875rem;
   color: var(--text-muted);
@@ -234,6 +242,16 @@ a {
   color: var(--text-faint);
   letter-spacing: 0.04em;
   margin-bottom: 20px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.plugin-detail-version {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  color: var(--text-faint);
+  opacity: 0.8;
 }
 
 .plugin-detail-desc {

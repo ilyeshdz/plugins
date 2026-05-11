@@ -1,5 +1,6 @@
 {
   "name": "Browser",
   "author": "Ilyes Hernandez",
-  "description": "Browse through a variety of plugins and themes"
+  "description": "Browse through a variety of plugins and themes",
+  "version": "1.0.0"
 }

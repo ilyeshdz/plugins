@@ -16,7 +16,11 @@
   {{/if}}
 
   <h1 class="plugin-detail-title">{{name}}</h1>
-  <div class="plugin-detail-meta">plugin</div>
+  <div class="plugin-detail-meta">
+    plugin {{#if version}}
+    <span class="plugin-detail-version">{{version}}</span>
+    {{/if}}
+  </div>
 
   <div class="plugin-detail-desc">{{>description}}</div>
 
