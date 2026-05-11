@@ -299,7 +299,7 @@ export function showChangelogModal(options: ChangelogOptions): void {
   const newEntries = filterNewEntries(options.entries, lastSeen);
   const entriesToShow = newEntries.length > 0 ? newEntries : options.entries;
 
-  openModal((props) => (
+  openModal((props: { close(): void }) => (
     <ChangelogModal
       close={props.close}
       options={options}

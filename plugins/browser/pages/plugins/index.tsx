@@ -34,7 +34,8 @@ const {
 
 export function PluginsPage() {
   const [search, setSearch] = createSignal("");
-  const [filter, setFilter] = createSignal<FilterOptions["status"]>("all");
+  const [filter, setFilter] =
+    createSignal<NonNullable<FilterOptions["status"]>>("all");
   const [refetchKey, setRefetchKey] = createSignal(0);
 
   const [plugins] = createResource(() => refetchKey(), fetchPlugins);

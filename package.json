@@ -4,12 +4,15 @@
   ],
   "type": "module",
   "scripts": {
+    "build": "lune ci",
+    "check": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run build",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "lint:github": "oxlint --format=github",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@uwu/lune": "^1.6.2",
@@ -17,7 +20,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
     "oxfmt": "^0.48.0",
-    "oxlint": "^1.63.0"
+    "oxlint": "^1.63.0",
+    "typescript": "^6.0.3"
   },
   "lint-staged": {
     "*": "oxfmt --no-error-on-unmatched-pattern && oxlint",

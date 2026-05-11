@@ -52,7 +52,7 @@ export function createQueue<T>(options: QueueOptions<T>) {
   const addMany = (newItems: QueueItem<T>[]) => {
     setItems((prev) => [
       ...prev,
-      ...newItems.map((item) => ({ ...item, status: "pending" })),
+      ...newItems.map((item): QueueItem<T> => ({ ...item, status: "pending" })),
     ]);
   };
 

@@ -148,10 +148,7 @@ export async function filterThemes(): Promise<
 export async function installTheme(theme: RemoteTheme): Promise<void> {
   if (isThemeInstalled(theme)) return;
 
-  const css =
-    typeof atob === "function"
-      ? atob(theme.content)
-      : Buffer.from(theme.content, "base64").toString("utf-8");
+  const css = atob(theme.content);
 
   const installedTheme: InstalledTheme = {
     name: theme.name,

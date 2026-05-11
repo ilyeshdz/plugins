@@ -31,8 +31,11 @@ const {
   },
 } = shelter;
 
-function getGuildIconUrl(guildId: string, icon: string | null): string | null {
-  if (!icon) return null;
+function getGuildIconUrl(
+  guildId: string,
+  icon: string | null,
+): string | undefined {
+  if (!icon) return undefined;
   return `https://cdn.discordapp.com/icons/${guildId}/${icon}.png?size=64`;
 }
 
@@ -232,7 +235,7 @@ export function LeaverPage() {
         <TextBox
           placeholder={`Search ${filteredGuilds().length} servers…`}
           value={search()}
-          onInput={(value) => setSearch(value)}
+          onInput={(value: string) => setSearch(value)}
         />
 
         <div class={classes.listWrap}>
