@@ -1,11 +1,3 @@
-/**
- * @fileoverview Changelog utility — Discord Beta-style minimalist changelog
- *
- * Uses localStorage to persist the last seen version per plugin.
- * On plugin load, shows a clean, minimal changelog modal styled with
- * Discord's own CSS variables.
- */
-
 import { type Component } from "solid-js";
 
 const {
@@ -25,59 +17,27 @@ const {
 
 const STORAGE_PREFIX = "hdzilyes_changelog_";
 
-// ─── Color mapping for section types ──────────────────────────────────────────
-
-const TYPE_COLORS: Record<string, string> = {
-  added: "var(--green-360)",
-  fixed: "var(--yellow-300)",
-  improved: "var(--blue-360)",
-  removed: "var(--red-400)",
-  changed: "var(--brand-360)",
-  default: "var(--text-muted)",
-};
-
-function typeColor(type?: string): string {
-  return TYPE_COLORS[type ?? "default"] ?? TYPE_COLORS.default;
-}
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 export interface ChangeGroup {
-  /** Section title, e.g. "New Features", "Bugs Eliminated" */
   title: string;
-  /** Visual category: added | fixed | improved | removed | changed */
   type?: string;
-  /** Optional short summary shown above the bullet list */
   blurb?: string;
-  /** Bullet items */
   items: string[];
 }
 
 export interface ChangelogEntry {
-  /** Version string, e.g. "1.1.0" */
   version: string;
-  /** Optional release date */
   date?: string;
-  /** Grouped changes for this version */
   changes: ChangeGroup[];
 }
 
 export interface ChangelogOptions {
-  /** Plugin name shown in the modal header */
   title: string;
-  /** Version subtitle, e.g. `version ${version}` */
   subtitle?: string;
-  /** Short description shown under the title */
   blurb?: string;
-  /** Internal plugin identifier used for localStorage key */
   pluginName: string;
-  /** Current version from plugin.json */
   currentVersion: string;
-  /** Changelog entries ordered newest first */
   entries: ChangelogEntry[];
 }
-
-// ─── Storage helpers ──────────────────────────────────────────────────────────
 
 function storageKey(pluginName: string): string {
   return `${STORAGE_PREFIX}${pluginName}`;
@@ -109,104 +69,64 @@ function filterNewEntries(
   lastSeen: string | null,
 ): ChangelogEntry[] {
   if (!lastSeen) return entries;
-  return entries.filter((e) => e.version > lastSeen);
+  return entries.filter((entry) => entry.version > lastSeen);
 }
 
-// ─── Styles using Discord CSS variables ───────────────────────────────────────
-
 const styles = {
-  headerWrap: {
+  header: {
     display: "flex",
     "flex-direction": "column",
-    gap: "2px",
+    gap: "4px",
     "margin-bottom": "16px",
-  } as Record<string, string>,
-
-  headerTitle: {
-    "font-size": "20px",
-    "font-weight": "700",
+  },
+  title: {
     color: "var(--header-primary)",
+    "font-size": "20px",
+    "font-weight": "600",
     "line-height": "1.25",
-  } as Record<string, string>,
-
-  headerSubtitle: {
-    "font-size": "12px",
+  },
+  muted: {
     color: "var(--text-muted)",
-    "font-weight": "500",
-  } as Record<string, string>,
-
-  headerBlurb: {
-    "font-size": "14px",
-    color: "var(--text-normal)",
-    "margin-top": "8px",
+    "font-size": "13px",
     "line-height": "1.4",
-  } as Record<string, string>,
-
-  divider: {
-    height: "1px",
-    background: "var(--background-modifier-accent)",
-    margin: "12px 0",
-  } as Record<string, string>,
-
-  group: {
-    "margin-bottom": "16px",
-  } as Record<string, string>,
-
-  groupHeader: {
+  },
+  body: {
     display: "flex",
-    "align-items": "center",
-    gap: "8px",
-    "margin-bottom": "6px",
-  } as Record<string, string>,
-
-  typeDot: {
-    width: "8px",
-    height: "8px",
-    "border-radius": "50%",
-    "flex-shrink": "0",
-  } as Record<string, string>,
-
-  groupTitle: {
+    "flex-direction": "column",
+    gap: "18px",
+    "max-height": "420px",
+    overflow: "auto",
+  },
+  version: {
+    color: "var(--header-secondary)",
     "font-size": "12px",
     "font-weight": "700",
     "text-transform": "uppercase",
-    "letter-spacing": "0.06em",
-    color: "var(--header-secondary)",
-  } as Record<string, string>,
-
-  groupBlurb: {
-    "font-size": "13px",
-    color: "var(--text-muted)",
+    "letter-spacing": "0.04em",
     "margin-bottom": "8px",
-    "margin-left": "16px",
-    "line-height": "1.35",
-  } as Record<string, string>,
-
+  },
+  groupTitle: {
+    color: "var(--header-primary)",
+    "font-size": "14px",
+    "font-weight": "600",
+    "margin-bottom": "4px",
+  },
+  list: {
+    margin: "0",
+    padding: "0 0 0 18px",
+  },
   item: {
-    display: "flex",
-    "align-items": "baseline",
-    gap: "8px",
-    "font-size": "14px",
     color: "var(--text-normal)",
-    "line-height": "1.5",
-    padding: "2px 0",
-    "padding-left": "16px",
-  } as Record<string, string>,
-
-  itemBullet: {
-    color: "var(--text-muted)",
     "font-size": "14px",
-    "line-height": "1",
-    "flex-shrink": "0",
-  } as Record<string, string>,
-
-  footerHint: {
-    "font-size": "12px",
-    color: "var(--text-muted)",
-  } as Record<string, string>,
+    "line-height": "1.45",
+    "margin-bottom": "4px",
+  },
+  footer: {
+    display: "flex",
+    "justify-content": "flex-end",
+    width: "100%",
+  },
 } as const;
-
-// ─── Modal component ──────────────────────────────────────────────────────────
 
 const ChangelogModal: Component<{
   close(): void;
@@ -216,83 +136,51 @@ const ChangelogModal: Component<{
   const opts = props.options;
 
   return (
-    <ModalRoot size={ModalSizes.MEDIUM}>
+    <ModalRoot size={ModalSizes.SMALL}>
       <ModalHeader close={props.close} />
-
       <ModalBody>
-        {/* Title block */}
-        <div style={styles.headerWrap}>
-          <div style={styles.headerTitle}>{opts.title}</div>
-          {opts.subtitle && (
-            <div style={styles.headerSubtitle}>{opts.subtitle}</div>
-          )}
-          {opts.blurb && <div style={styles.headerBlurb}>{opts.blurb}</div>}
+        <div style={styles.header}>
+          <div style={styles.title}>{opts.title}</div>
+          {opts.subtitle && <div style={styles.muted}>{opts.subtitle}</div>}
+          {opts.blurb && <div style={styles.muted}>{opts.blurb}</div>}
         </div>
 
-        <div style={styles.divider} />
-
-        {/* Entries */}
-        <div class={niceScrollbarsClass()}>
+        <div class={niceScrollbarsClass()} style={styles.body}>
           {props.entries.map((entry) => (
-            <div>
-              {entry.changes.map((group) => {
-                const color = typeColor(group.type);
-                return (
-                  <div style={styles.group}>
-                    <div style={styles.groupHeader}>
-                      <span
-                        style={{
-                          ...styles.typeDot,
-                          background: color,
-                        }}
-                      />
-                      <span style={styles.groupTitle}>{group.title}</span>
-                    </div>
-
-                    {group.blurb && (
-                      <div style={styles.groupBlurb}>{group.blurb}</div>
-                    )}
-
+            <section>
+              <div style={styles.version}>
+                v{entry.version}
+                {entry.date ? ` - ${entry.date}` : ""}
+              </div>
+              {entry.changes.map((group) => (
+                <div>
+                  <div style={styles.groupTitle}>{group.title}</div>
+                  {group.blurb && <div style={styles.muted}>{group.blurb}</div>}
+                  <ul style={styles.list}>
                     {group.items.map((item) => (
-                      <div style={styles.item}>
-                        <span style={styles.itemBullet}>—</span>
-                        <span>{item}</span>
-                      </div>
+                      <li style={styles.item}>{item}</li>
                     ))}
-                  </div>
-                );
-              })}
-            </div>
+                  </ul>
+                </div>
+              ))}
+            </section>
           ))}
         </div>
       </ModalBody>
-
       <ModalFooter>
-        <div
-          style={{
-            display: "flex",
-            "align-items": "center",
-            "justify-content": "space-between",
-            width: "100%",
-          }}
-        >
-          <span style={styles.footerHint}>
-            {opts.pluginName} · v{opts.currentVersion}
-          </span>
+        <div style={styles.footer}>
           <Button
             color={ButtonColors.PRIMARY}
             size={ButtonSizes.SMALL}
             onClick={props.close}
           >
-            Got it
+            Done
           </Button>
         </div>
       </ModalFooter>
     </ModalRoot>
   );
 };
-
-// ─── Public API ───────────────────────────────────────────────────────────────
 
 export function showChangelogModal(options: ChangelogOptions): void {
   const lastSeen = getLastSeenVersion(options.pluginName);
@@ -310,12 +198,12 @@ export function showChangelogModal(options: ChangelogOptions): void {
   setLastSeenVersion(options.pluginName, options.currentVersion);
 }
 
-/** Convenience helper for `onLoad` — always shows for testing */
 export function registerChangelogOnLoad(options: ChangelogOptions): void {
-  showChangelogModal(options);
+  if (shouldShowChangelog(options.pluginName, options.currentVersion)) {
+    showChangelogModal(options);
+  }
 }
 
-/** Create a "Changelog" button for use in plugin settings pages */
 export function createChangelogButton(options: ChangelogOptions): Component {
   return () => (
     <Button
