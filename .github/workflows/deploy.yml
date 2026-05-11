@@ -28,7 +28,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check and build code
+      - name: Check code
         run: pnpm check
 
       - name: Run SSG
