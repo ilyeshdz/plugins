@@ -40,7 +40,7 @@ export function ThemesPage() {
   const [filter, setFilter] = createSignal<ThemeStatusFilter>("all");
   const [refetchKey, setRefetchKey] = createSignal(0);
 
-  const [themes] = createResource(() => refetchKey(), fetchThemes);
+  const [themes, { refetch }] = createResource(() => refetchKey(), fetchThemes);
 
   const filteredThemes = createMemo(() => {
     return filterThemeList(themes() ?? [], search(), filter());
@@ -56,6 +56,11 @@ export function ThemesPage() {
   const handleUninstall = async (theme: RemoteTheme) => {
     await uninstallTheme(theme);
     refresh();
+  };
+
+  const handleRefresh = () => {
+    refetch();
+    setRefetchKey((k) => k + 1);
   };
 
   return (
@@ -84,6 +89,13 @@ export function ThemesPage() {
         <Header tag={HeaderTags.H3} margin={false}>
           Themes
         </Header>
+        <Button
+          color={ButtonColors.SECONDARY}
+          size={ButtonSizes.SMALL}
+          onClick={handleRefresh}
+        >
+          Refresh
+        </Button>
       </div>
 
       <ItemGrid<RemoteTheme & { installed: boolean }>

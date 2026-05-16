@@ -40,13 +40,19 @@ export function PluginsPage() {
   const [filter, setFilter] = createSignal<PluginStatusFilter>("all");
   const [refetchKey, setRefetchKey] = createSignal(0);
 
-  const [plugins] = createResource(() => refetchKey(), fetchPlugins);
+  const [plugins, { refetch }] = createResource(
+    () => refetchKey(),
+    fetchPlugins,
+  );
 
   const filteredPlugins = createMemo(() => {
     return filterPluginList(plugins() ?? [], search(), filter());
   });
 
-  const refresh = () => setRefetchKey((k) => k + 1);
+  const refresh = () => {
+    refetch();
+    setRefetchKey((k) => k + 1);
+  };
 
   const withRefresh =
     (fn: (p: Plugin) => Promise<void>) => async (plugin: Plugin) => {
@@ -82,6 +88,13 @@ export function PluginsPage() {
         <Header tag={HeaderTags.H3} margin={false}>
           Plugins
         </Header>
+        <Button
+          color={ButtonColors.SECONDARY}
+          size={ButtonSizes.SMALL}
+          onClick={refresh}
+        >
+          Refresh
+        </Button>
       </div>
 
       <ItemGrid<Plugin>
