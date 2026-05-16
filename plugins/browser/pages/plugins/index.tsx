@@ -82,6 +82,13 @@ export function PluginsPage() {
         <Header tag={HeaderTags.H3} margin={false}>
           Plugins
         </Header>
+        <Button
+          color={ButtonColors.SECONDARY}
+          size={ButtonSizes.SMALL}
+          onClick={refresh}
+        >
+          Refresh
+        </Button>
       </div>
 
       <ItemGrid<Plugin>
