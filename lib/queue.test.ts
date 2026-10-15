@@ -181,6 +181,74 @@ describe("createQueue", () => {
     expect(queue.items().find((i) => i.id === "b")?.status).toBe("pending");
   });
 
+  it("uses getRetryDelayMs to size the wait before a retry", async () => {
+    const observed: number[] = [];
+    let calls = 0;
+    const queue = makeQueue(
+      async () => {
+        calls++;
+        if (calls === 1) throw new Error("rl");
+      },
+      {
+        maxRetries: 2,
+        getRetryDelayMs: (_err, attempt) => {
+          observed.push(attempt);
+          return 5000;
+        },
+      },
+    );
+
+    queue.add({ id: "a", data: null });
+    const runPromise = queue.run();
+
+    // The retry should wait 5000ms (per the hook), not 1000ms (default).
+    await vi.advanceTimersByTimeAsync(1000);
+    expect(calls).toBe(1); // still waiting on the hook's longer delay
+    await vi.advanceTimersByTimeAsync(4000);
+
+    await drain(runPromise);
+    expect(observed).toEqual([1]);
+    expect(queue.state()).toBe("completed");
+    expect(queue.items()[0].status).toBe("success");
+  });
+
+  it("falls back to linear backoff when getRetryDelayMs is absent", async () => {
+    let calls = 0;
+    const queue = makeQueue(async () => {
+      calls++;
+      if (calls < 2) throw new Error("flaky");
+    });
+
+    queue.add({ id: "a", data: null });
+    const runPromise = queue.run();
+
+    // default first retry delay is 1000ms
+    await vi.advanceTimersByTimeAsync(999);
+    expect(calls).toBe(1);
+    await vi.advanceTimersByTimeAsync(1);
+
+    await drain(runPromise);
+    expect(queue.state()).toBe("completed");
+  });
+
+  it("invokes onError with a normalized Error even for thrown non-errors", async () => {
+    const errors: unknown[] = [];
+    const queue = makeQueue(
+      async () => {
+        // eslint-disable-next-line no-throw-literal
+        throw "a bare string";
+      },
+      { maxRetries: 0, onError: (_item, err) => void errors.push(err) },
+    );
+
+    queue.add({ id: "a", data: null });
+    await drain(queue.run());
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toBeInstanceOf(Error);
+    expect((errors[0] as Error).message).toBe("a bare string");
+  });
+
   it("clear() empties items and resets to idle", async () => {
     const queue = makeQueue(async () => {});
     queue.add({ id: "a", data: null });

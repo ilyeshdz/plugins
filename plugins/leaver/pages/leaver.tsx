@@ -1,15 +1,16 @@
 import {
   createSignal,
   createMemo,
+  createEffect,
   Show,
   For,
-  onCleanup,
   onMount,
 } from "solid-js";
 
 import { Feedback } from "../../../components/feedback/index.jsx";
 import {
   createLeaverQueue,
+  formatGuildNames,
   getGuilds,
   type Guild,
 } from "../../../lib/leaver.js";
@@ -33,15 +34,22 @@ const {
   },
 } = shelter;
 
+// Module scope, NOT inside the component: settings pages unmount when the
+// user navigates away, and an in-component queue would be stopped mid-run
+// by onCleanup. This one keeps leaving servers in the background and the
+// page re-attaches to live progress when the user comes back.
+const queue = createLeaverQueue(5000);
+
+/** Stop the queue — called on plugin unload. */
+export function stopLeaverQueue(): void {
+  queue.stop();
+}
+
 export function LeaverPage() {
   const currentUserId = getCurrentUserId();
   const [guilds, setGuilds] = createSignal<Guild[]>([]);
   const [search, setSearch] = createSignal("");
   const [selected, setSelected] = createSignal<Set<string>>(new Set());
-
-  const queue = createLeaverQueue(5000, () => {
-    setGuilds(getGuilds());
-  });
 
   const isRunning = createMemo(() =>
     ["running", "completed", "completed-with-errors"].includes(queue.state()),
@@ -49,6 +57,12 @@ export function LeaverPage() {
 
   onMount(() => {
     setGuilds(getGuilds());
+  });
+
+  // Refresh the list when a run finishes so left servers disappear —
+  // even if the run completed while the user was on another page.
+  createEffect(() => {
+    if (isRunning()) setGuilds(getGuilds());
   });
 
   const filteredGuilds = createMemo(() => {
@@ -94,14 +108,14 @@ export function LeaverPage() {
 
   const startLeaving = async () => {
     const selectedGuilds = guilds().filter((g) => selected().has(g.id));
-    const serverNames = selectedGuilds.map((g) => g.name).join(", ");
+    const namesPreview = formatGuildNames(selectedGuilds.map((g) => g.name));
 
     try {
       await openConfirmationModal({
         header: () =>
           `Leave ${selectedGuilds.length === 1 ? "Server" : "Servers"}`,
         body: () =>
-          `Are you sure you want to leave ${selectedGuilds.length === 1 ? "this server" : `these ${selectedGuilds.length} servers`}?\n\n${serverNames}`,
+          `Are you sure you want to leave ${selectedGuilds.length === 1 ? "this server" : `these ${selectedGuilds.length} servers`}?\n\n${namesPreview}`,
         confirmText: "Leave",
         cancelText: "Cancel",
         type: "danger",
@@ -138,7 +152,6 @@ export function LeaverPage() {
     setGuilds(getGuilds());
   };
 
-  onCleanup(() => queue.stop());
   const stats = createMemo(() => {
     const items = queue.items();
     const total = items.length;
