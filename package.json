@@ -16,7 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@uwu/lune": "^1.6.2",
+    "@uwu/lune": "^1.6.3",
     "@uwu/shelter-defs": "^1.6.4",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.4",
