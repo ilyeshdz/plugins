@@ -12,8 +12,8 @@ importers:
         specifier: ^1.6.2
         version: 1.6.2
       '@uwu/shelter-defs':
-        specifier: ^1.4.1
-        version: 1.5.1
+        specifier: ^1.6.4
+        version: 1.6.4
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -844,8 +844,8 @@ packages:
     resolution: {integrity: sha512-0/e1zFGm7pBISyuNvhKMqdg4gEQOpBtf8wdquJaUDqA0enrV55iwMWrrCdJHlfx77K1D8hjnAUGvCXxwFebg5Q==}
     hasBin: true
 
-  '@uwu/shelter-defs@1.5.1':
-    resolution: {integrity: sha512-bO3M5SgqEpuNZkjd/LZFtTNNATpmVle5uznVp0QNgi3o1w2ej/ieYmwFK6nBZqnZHd8/4aJN1Njl/JbTnZcY5A==}
+  '@uwu/shelter-defs@1.6.4':
+    resolution: {integrity: sha512-BBwkbYZ2jO15mdP6GFXR9wuay0AdJVrX4j8uGU8zppyejDaFyI0NE8RLeR6uY7OCOzDKbKxj34n3aFpF54kj1w==}
 
   '@vitest/mocker@5.0.4':
     resolution: {integrity: sha512-tqAlrYWce4iUxhr3ncNohejtCTOcHeE8XWrSNZY3OhPoDn01yeGv+gnaBy64ATp7o6pb03eIbBAjzmibpc9vIQ==}
@@ -1027,8 +1027,8 @@ packages:
     engines: {node: '>=18'}
     hasBin: true
 
-  idb@7.1.1:
-    resolution: {integrity: sha512-gchesWBzyvGHRO9W8tzUWFDycow5gwjvFKfyV9FF32Y7F50yZMp7mP+T2mJIWFx49zicqyC4uefHM17o6xKIVQ==}
+  idb@8.0.4:
+    resolution: {integrity: sha512-jd0ITCrN+Zah4J7R/Z2jnR3W7A4BXDAjmo62MwWuSjxCiueUAf7X5rbodEdidWzeknwXHmLpdZkoiiCppNi30Q==}
 
   immutable@5.1.5:
     resolution: {integrity: sha512-t7xcm2siw+hlUM68I+UEOK+z84RzmN59as9DZ7P1l0994DKUWV7UXBMQZVxaoMSRQ+PBZbHCOoBt7a2wxOMt+A==}
@@ -1368,10 +1368,6 @@ packages:
   solid-js@1.6.16:
     resolution: {integrity: sha512-Ng4CahvLlpGA3BXIMiiMdwhI8WpObZ8gXqm97GCKR4+MpnODs6Pdpco+tmVCY/4ZDFaEKDxz7WRLAAdoXdlY7w==}
 
-  source-map-js@1.2.1:
-    resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}
-    engines: {node: '>=0.10.0'}
-
   source-map-js@1.2.2:
     resolution: {integrity: sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==}
     engines: {node: '>=0.10.0'}
@@ -1380,8 +1376,8 @@ packages:
     resolution: {integrity: sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==}
     engines: {node: '>=0.10.0'}
 
-  spitroast@2.1.4:
-    resolution: {integrity: sha512-IA987I3wS8RbrKrgag+NsxLUAttrqONF7UGOL+uQFmLLXlMhZl42LomTAltBQaev0jUXIaRiqShZ3hnJYT7OCQ==}
+  spitroast@2.2.0:
+    resolution: {integrity: sha512-JmfguBiS2ftKdPX6/wASqYT5Wr0tFuaD7l67lXE8QAeWfxgLRxBp5C+2X8ne6dq+EdKplfRQiry8QNSUwpX4GA==}
 
   std-env@4.3.0:
     resolution: {integrity: sha512-OtU/EgQ1kIm5KwqQpBC6ZEMXrZRui11w8zgfTWp8cdO9B8OaPsbA8bTHO2P+HNo1VlUTGMVBwPhydu6poeXiag==}
@@ -2030,7 +2026,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.4
+      picomatch: 4.0.7
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -2165,11 +2161,11 @@ snapshots:
       - supports-color
       - utf-8-validate
 
-  '@uwu/shelter-defs@1.5.1':
+  '@uwu/shelter-defs@1.6.4':
     dependencies:
-      idb: 7.1.1
+      idb: 8.0.4
       solid-js: 1.6.16
-      spitroast: 2.1.4
+      spitroast: 2.2.0
 
   '@vitest/mocker@5.0.4(vite@8.3.4(sass@1.99.0)(yaml@2.9.0))':
     dependencies:
@@ -2299,9 +2295,9 @@ snapshots:
 
   expect-type@1.4.0: {}
 
-  fdir@6.5.0(picomatch@4.0.4):
+  fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
-      picomatch: 4.0.4
+      picomatch: 4.0.7
 
   fill-range@7.1.1:
     dependencies:
@@ -2335,7 +2331,7 @@ snapshots:
 
   husky@9.1.7: {}
 
-  idb@7.1.1: {}
+  idb@8.0.4: {}
 
   immutable@5.1.5: {}
 
@@ -2643,7 +2639,7 @@ snapshots:
     dependencies:
       chokidar: 4.0.3
       immutable: 5.1.5
-      source-map-js: 1.2.1
+      source-map-js: 1.2.2
     optionalDependencies:
       '@parcel/watcher': 2.5.6
 
@@ -2665,13 +2661,11 @@ snapshots:
     dependencies:
       csstype: 3.2.3
 
-  source-map-js@1.2.1: {}
-
   source-map-js@1.2.2: {}
 
   source-map@0.6.1: {}
 
-  spitroast@2.1.4: {}
+  spitroast@2.2.0: {}
 
   std-env@4.3.0: {}
 
@@ -2702,8 +2696,8 @@ snapshots:
 
   tinyglobby@0.2.17:
     dependencies:
-      fdir: 6.5.0(picomatch@4.0.4)
-      picomatch: 4.0.4
+      fdir: 6.5.0(picomatch@4.0.7)
+      picomatch: 4.0.7
 
   tinypool@2.1.0: {}
 
