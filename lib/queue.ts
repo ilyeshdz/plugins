@@ -24,10 +24,23 @@ export interface QueueOptions<T> {
   onError?: (item: QueueItem<T>, error: Error) => void | Promise<void>;
   onComplete?: () => void | Promise<void>;
   maxRetries?: number;
+  /**
+   * How long to wait before retrying a failed attempt. Defaults to a
+   * linear backoff (1s, 2s, 3s...). Return a larger value to honour a
+   * server-provided rate limit.
+   */
+  getRetryDelayMs?: (error: Error, attempt: number) => number;
 }
 
 export function createQueue<T>(options: QueueOptions<T>) {
-  const { delayMs, onProcess, onError, onComplete, maxRetries = 3 } = options;
+  const {
+    delayMs,
+    onProcess,
+    onError,
+    onComplete,
+    maxRetries = 3,
+    getRetryDelayMs,
+  } = options;
 
   const [items, setItems] = createSignal<QueueItem<T>[]>([]);
   const [state, setState] = createSignal<QueueState>("idle");
@@ -107,7 +120,12 @@ export function createQueue<T>(options: QueueOptions<T>) {
         lastError = err;
         attempt++;
         if (attempt > maxRetries) break;
-        const completedDelay = await sleep(1000 * attempt, signal);
+        const asError =
+          err instanceof Error ? err : new Error(String(err ?? "unknown"));
+        const delay = getRetryDelayMs
+          ? getRetryDelayMs(asError, attempt)
+          : 1000 * attempt;
+        const completedDelay = await sleep(delay, signal);
         if (!completedDelay) return false;
       }
     }

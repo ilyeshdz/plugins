@@ -4,7 +4,7 @@ const {
 
 import { registerPage } from "../../lib/shelter/settings.js";
 import { LeaverIcon } from "./icons/leaver.jsx";
-import { LeaverPage } from "./pages/leaver.jsx";
+import { LeaverPage, stopLeaverQueue } from "./pages/leaver.jsx";
 
 const unregister = registerPage(
   "hdzilyes-leaver",
@@ -16,5 +16,7 @@ const unregister = registerPage(
 log("Leaver plugin loaded");
 
 export function onUnload() {
+  // The queue intentionally survives page navigation, but not plugin unload.
+  stopLeaverQueue();
   unregister();
 }
