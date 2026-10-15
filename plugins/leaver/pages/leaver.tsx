@@ -125,7 +125,7 @@ export function LeaverPage() {
 
   const stopQueue = () => {
     queue.stop();
-    showToast({ message: "Queue stopped", color: ToastColors.WARNING });
+    showToast({ title: "Queue stopped", color: ToastColors.WARNING });
   };
 
   const isQueueCompleted = createMemo(
