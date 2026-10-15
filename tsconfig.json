@@ -11,7 +11,21 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "allowJs": true
+    "allowJs": true,
+    // Temporary workaround: @uwu/shelter-defs bundles shelter-ui's type defs
+    // inside itself (dist/shelter-ui/src), but its windowApi.d.ts imports them
+    // by the "@uwu/shelter-ui" package name, which isn't a dependency and so
+    // fails to resolve — collapsing all of shelter.ui to `any`. Point those
+    // imports at the bundled copies so shelter.ui is properly typed. Remove
+    // once shelter-defs references them relatively (uwu/shelter#78).
+    "paths": {
+      "@uwu/shelter-ui": [
+        "./node_modules/@uwu/shelter-defs/dist/shelter-ui/src/index"
+      ],
+      "@uwu/shelter-ui/dist/wrapperTypes": [
+        "./node_modules/@uwu/shelter-defs/dist/shelter-ui/src/wrapperTypes"
+      ]
+    }
   },
   "include": [
     "plugins/**/*.ts",
