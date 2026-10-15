@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "lune ci",
-    "check": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run build",
+    "check": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run test && pnpm run build",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
     "lint:github": "oxlint --format=github",
     "prepare": "husky",
+    "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
@@ -22,7 +23,8 @@
     "oxfmt": "^0.48.0",
     "oxlint": "^1.63.0",
     "solid-js": "1.6.16",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.4"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs,scss,css,html,md}": "oxfmt --no-error-on-unmatched-pattern",
