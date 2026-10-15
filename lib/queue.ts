@@ -8,7 +8,6 @@ export type QueueItemStatus = "pending" | "processing" | "success" | "failed";
 export type QueueState =
   | "idle"
   | "running"
-  | "paused"
   | "completed"
   | "completed-with-errors";
 
@@ -34,7 +33,6 @@ export function createQueue<T>(options: QueueOptions<T>) {
   const [state, setState] = createSignal<QueueState>("idle");
 
   let abortController: AbortController | null = null;
-  let isPaused = false;
 
   const sleep = (ms: number, signal: AbortSignal) =>
     new Promise<boolean>((resolve) => {
@@ -129,9 +127,8 @@ export function createQueue<T>(options: QueueOptions<T>) {
     abortController = new AbortController();
     const signal = abortController.signal;
     setState("running");
-    isPaused = false;
 
-    while (!signal.aborted && !isPaused) {
+    while (!signal.aborted) {
       const currentItems = items();
       const next = currentItems.find((i) => i.status === "pending");
       if (!next) break;
@@ -139,7 +136,7 @@ export function createQueue<T>(options: QueueOptions<T>) {
       await processItem(next, signal);
 
       const remaining = items().filter((i) => i.status === "pending").length;
-      if (remaining > 0 && !signal.aborted && !isPaused) {
+      if (remaining > 0 && !signal.aborted) {
         const completedDelay = await sleep(delayMs, signal);
         if (!completedDelay) break;
       }
@@ -149,19 +146,6 @@ export function createQueue<T>(options: QueueOptions<T>) {
       const failed = items().filter((i) => i.status === "failed").length;
       setState(failed > 0 ? "completed-with-errors" : "completed");
       if (onComplete) await onComplete();
-    }
-  };
-
-  const pause = () => {
-    isPaused = true;
-    setState("paused");
-  };
-
-  const resume = () => {
-    if (state() === "paused") {
-      isPaused = false;
-      setState("running");
-      run();
     }
   };
 
@@ -177,8 +161,6 @@ export function createQueue<T>(options: QueueOptions<T>) {
     addMany,
     clear,
     run,
-    pause,
-    resume,
     stop,
   };
 }
