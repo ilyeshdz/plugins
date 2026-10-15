@@ -35,5 +35,3 @@ export function onUnload() {
 export function onLoad() {
   onLoadThemes();
 }
-
-export const ChangelogButton = createChangelogButton(changelogOptions);
