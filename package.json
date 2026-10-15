@@ -25,7 +25,8 @@
     "typescript": "^6.0.3"
   },
   "lint-staged": {
-    "*": "oxfmt --no-error-on-unmatched-pattern && oxlint",
+    "*.{ts,tsx,js,jsx,mjs,cjs,scss,css,html,md}":
+      "oxfmt --no-error-on-unmatched-pattern",
     "*.{ts,tsx,js,jsx,mjs,cjs}": "oxlint"
   }
 }
