@@ -83,44 +83,6 @@ export async function fetchPlugins(): Promise<Plugin[]> {
   return plugins;
 }
 
-export type FilterOptions = {
-  search?: string;
-  status?: "all" | "enabled" | "disabled" | "installed";
-};
-
-/**
- * Filter plugins by search query and status
- * @param options - Filter criteria
- * @returns Filtered array of plugins
- */
-export async function filterPlugins(options: FilterOptions): Promise<Plugin[]> {
-  let plugins = await fetchPlugins();
-
-  if (options.search) {
-    const lowerQuery = options.search.toLowerCase();
-    plugins = plugins.filter(
-      (p) =>
-        p.name.toLowerCase().includes(lowerQuery) ||
-        p.description.toLowerCase().includes(lowerQuery) ||
-        p.author.toLowerCase().includes(lowerQuery),
-    );
-  }
-
-  switch (options.status) {
-    case "enabled":
-      plugins = plugins.filter((p) => p.installed && p.enabled);
-      break;
-    case "disabled":
-      plugins = plugins.filter((p) => p.installed && !p.enabled);
-      break;
-    case "installed":
-      plugins = plugins.filter((p) => p.installed);
-      break;
-  }
-
-  return plugins;
-}
-
 /**
  * Install a remote plugin
  * @param plugin - Plugin to install

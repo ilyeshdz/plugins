@@ -44,9 +44,7 @@ export function LeaverPage() {
   });
 
   const isRunning = createMemo(() =>
-    ["running", "paused", "completed", "completed-with-errors"].includes(
-      queue.state(),
-    ),
+    ["running", "completed", "completed-with-errors"].includes(queue.state()),
   );
 
   onMount(() => {
@@ -125,7 +123,7 @@ export function LeaverPage() {
 
   const stopQueue = () => {
     queue.stop();
-    showToast({ message: "Queue stopped", color: ToastColors.WARNING });
+    showToast({ title: "Queue stopped", color: ToastColors.WARNING });
   };
 
   const isQueueCompleted = createMemo(
@@ -133,9 +131,7 @@ export function LeaverPage() {
       queue.state() === "completed" ||
       queue.state() === "completed-with-errors",
   );
-  const isQueueActive = createMemo(
-    () => queue.state() === "running" || queue.state() === "paused",
-  );
+  const isQueueActive = createMemo(() => queue.state() === "running");
 
   const resetQueue = () => {
     queue.clear();

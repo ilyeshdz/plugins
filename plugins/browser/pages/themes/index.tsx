@@ -84,6 +84,13 @@ export function ThemesPage() {
         <Header tag={HeaderTags.H3} margin={false}>
           Themes
         </Header>
+        <Button
+          color={ButtonColors.SECONDARY}
+          size={ButtonSizes.SMALL}
+          onClick={refresh}
+        >
+          Refresh
+        </Button>
       </div>
 
       <ItemGrid<RemoteTheme & { installed: boolean }>

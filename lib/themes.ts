@@ -129,13 +129,6 @@ export async function fetchThemes(): Promise<
   }));
 }
 
-/** Filter themes (currently just fetches all) */
-export async function filterThemes(): Promise<
-  (RemoteTheme & { installed: boolean })[]
-> {
-  return fetchThemes();
-}
-
 /**
  * Install a theme
  * @param theme - Theme to install

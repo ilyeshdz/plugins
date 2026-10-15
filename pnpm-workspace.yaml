@@ -3,3 +3,5 @@ packages:
 allowBuilds:
   "@parcel/watcher": true
   esbuild: true
+minimumReleaseAgeExclude:
+  - "@uwu/shelter-defs@1.6.4"

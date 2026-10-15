@@ -18,5 +18,3 @@ log("Leaver plugin loaded");
 export function onUnload() {
   unregister();
 }
-
-export function onLoad() {}

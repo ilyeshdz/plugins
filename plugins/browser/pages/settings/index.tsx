@@ -11,7 +11,7 @@ import {
 import classes from "./index.scss";
 
 const {
-  ui: { SwitchItem },
+  ui: { Switch },
 } = shelter;
 
 function TrashIcon({ onClick }: { onClick: () => void }) {
@@ -61,10 +61,9 @@ export function SettingsPage() {
               <span class={classes.themeAuthor}>No theme applied</span>
             </div>
             <div class={classes.themeActions}>
-              <SwitchItem
+              <Switch
                 checked={store().active === null}
                 onChange={() => handleSetActive(null)}
-                hideBorder
               />
             </div>
           </div>
@@ -80,10 +79,9 @@ export function SettingsPage() {
                   <span class={classes.themeAuthor}>by {theme.author}</span>
                 </div>
                 <div class={classes.themeActions}>
-                  <SwitchItem
+                  <Switch
                     checked={store().active === theme.name}
                     onChange={() => handleSetActive(theme)}
-                    hideBorder
                   />
                   <TrashIcon onClick={() => handleUninstall(theme)} />
                 </div>
