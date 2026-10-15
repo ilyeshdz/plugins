@@ -19,7 +19,7 @@
     "@uwu/lune": "^1.6.2",
     "@uwu/shelter-defs": "^1.6.4",
     "husky": "^9.1.7",
-    "lint-staged": "^17.0.4",
+    "lint-staged": "^17.6.0",
     "oxfmt": "^0.48.0",
     "oxlint": "^1.63.0",
     "solid-js": "1.6.16",
