@@ -24,7 +24,7 @@
     "oxlint": "^1.63.0",
     "solid-js": "1.6.16",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.4"
+    "vitest": "^5.0.5"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs,scss,css,html,md}": "oxfmt --no-error-on-unmatched-pattern",
