@@ -22,7 +22,7 @@
     "lint-staged": "^17.0.4",
     "oxfmt": "^0.48.0",
     "oxlint": "^1.63.0",
-    "solid-js": "1.6.16",
+    "solid-js": "1.9.17",
     "typescript": "^6.0.3",
     "vitest": "^5.0.4"
   },
